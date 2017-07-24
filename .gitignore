@@ -1,4 +1,6 @@
 build/
+devel/
+install/
 bin/
 lib/
 msg_gen/

@@ -1,0 +1,13 @@
+<launch>
+  <include file="$(find deedee_gazebo)/launch/deedee.launch"/>
+
+  <node name="actuators_interface"
+        pkg="robot_control"
+        type="actuators_interface.py"
+        required="true"/>
+
+  <node name="controller"
+        pkg="robot_control"
+        type="move_deedee.py"
+        required="false"/>
+</launch>
