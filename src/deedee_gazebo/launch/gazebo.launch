@@ -30,7 +30,8 @@
               -y $(arg y)
               -z $(arg z)
               -urdf
-              -unpause-model robot
+              -unpause
+              -model robot
               -param robot_description"
         respawn="false"
         output="screen"
