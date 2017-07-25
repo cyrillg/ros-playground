@@ -1,5 +1,7 @@
 <launch>
-  <include file="$(find deedee_gazebo)/launch/gazebo.launch"/>
+  <include file="$(find deedee_gazebo)/launch/gazebo.launch">
+    <arg name="z" value="0.25" />
+  </include>
 
   <rosparam command="load"
             file="$(find deedee_gazebo)/config/joints.yaml"
