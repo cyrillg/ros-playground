@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
+from rospy import Subscriber, Publisher
 from robot_control.msg import WheelSpeeds
 from std_msgs.msg import Float64
 
@@ -9,16 +10,17 @@ class ActuatorsInterface:
     rospy.init_node("actuators_interface")
     rospy.sleep(0.5)
 
-    self.wheel_speeds_sub = rospy.Subscriber("/wheel_speeds",
-                                           WheelSpeeds,
-                                           self.on_wheel_speeds)
+    self.wheel_speeds_sub = Subscriber("/wheel_speeds",
+                                       WheelSpeeds,
+                                       self.on_wheel_speeds)
 
-    self.left_wheel_cmd_pub = rospy.Publisher("/deedee_left_wheel_controller/command",
-                                              Float64,
-                                              queue_size=10)
-    self.right_wheel_cmd_pub = rospy.Publisher("/deedee_right_wheel_controller/command",
-                                               Float64,
-                                               queue_size=10)
+
+    self.l_wheel_cmd_pub = Publisher("/deedee_left_wheel_controller/command",
+                                     Float64,
+                                     queue_size=10)
+    self.r_wheel_cmd_pub = Publisher("/deedee_right_wheel_controller/command",
+                                     Float64,
+                                     queue_size=10)
 
     rospy.spin()
 

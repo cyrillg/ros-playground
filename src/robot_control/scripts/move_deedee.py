@@ -36,6 +36,10 @@ class Controller:
         self.wheel_speeds_pub.publish(msg)
         rate.sleep()
 
+      msg = WheelSpeeds()
+      msg.left = 0.0
+      msg.right = 0.0
+      self.wheel_speeds_pub.publish(msg)
       rate.sleep()
 
 if __name__=="__main__":
