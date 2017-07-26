@@ -25,8 +25,8 @@ class ActuatorsInterface:
     rospy.spin()
 
   def on_wheel_speeds(self, speeds):
-    self.left_wheel_cmd_pub.publish(float(speeds.left))
-    self.right_wheel_cmd_pub.publish(float(speeds.right))
+    self.l_wheel_cmd_pub.publish(float(speeds.left))
+    self.r_wheel_cmd_pub.publish(float(speeds.right))
 
 if __name__=="__main__":
   ActuatorsInterface()

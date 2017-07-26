@@ -4,10 +4,10 @@
   <node name="actuators_interface"
         pkg="robot_control"
         type="actuators_interface.py"
-        required="true"/>
+        required="false"/>
 
-  <node name="controller"
+  <!--node name="controller"
         pkg="robot_control"
         type="move_deedee.py"
-        required="false"/>
+        required="false"/-->
 </launch>
