@@ -1,6 +1,6 @@
 <launch>
   <include file="$(find deedee_gazebo)/launch/gazebo.launch">
-    <arg name="z" value="0.25" />
+    <arg name="z" value="0.35" />
   </include>
 
   <rosparam command="load"

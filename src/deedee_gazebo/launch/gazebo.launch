@@ -1,11 +1,12 @@
 <launch>
 
   <!-- these are the arguments you can pass this launch file, for example paused:=true -->
-  <arg name="paused" default="false"/>
+  <arg name="paused" default="true"/>
   <arg name="use_sim_time" default="true"/>
-  <arg name="gui" default="true"/>
-  <arg name="headless" default="false"/>
+  <arg name="gui" default="false"/>
+  <arg name="headless" default="true"/>
   <arg name="debug" default="false"/>
+  <arg name="world" default="$(find deedee_gazebo)/worlds/deedee.world"/>
   <arg name="model" default="$(find deedee_description)/urdf/deedee.xacro"/>
   <arg name="x" default="0.0"/>
   <arg name="y" default="0.0"/>
@@ -13,6 +14,7 @@
 
   <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(arg world)" />
     <arg name="debug" value="$(arg debug)" />
     <arg name="gui" value="$(arg gui)" />
     <arg name="paused" value="$(arg paused)"/>
@@ -20,7 +22,7 @@
     <arg name="headless" value="$(arg headless)"/>
   </include>
 
-  <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
+  <param name="robot_description" command="$(find xacro)/xacro $(arg model)" />
 
   <!-- push robot_description to factory and spawn robot in gazebo -->
   <node name="urdf_spawner"
@@ -30,7 +32,6 @@
               -y $(arg y)
               -z $(arg z)
               -urdf
-              -unpause
               -model robot
               -param robot_description"
         respawn="false"

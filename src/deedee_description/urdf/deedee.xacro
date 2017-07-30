@@ -91,7 +91,7 @@
                    ${-baseheight/2}"
               rpy="0 0 0"
       />
-      <limit effort="30" velocity="1.0"/>
+      <limit effort="2000" velocity="4.0"/>
     </joint>
 
     <gazebo reference="${prefix}_wheel">

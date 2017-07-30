@@ -21,7 +21,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
-# catkin_python_setup()
+catkin_python_setup()
 
 ################################################
 ## Declare ROS messages, services and actions ##
@@ -104,7 +104,7 @@ generate_messages(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
  # INCLUDE_DIRS include
- # LIBRARIES robot_control
+ # LIBRARIES lib
   CATKIN_DEPENDS message_runtime roscpp rospy std_msgs
  # DEPENDS system_lib
 )
@@ -159,11 +159,18 @@ include_directories(
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
-install(PROGRAMS
-  scripts/actuators_interface.py
-  scripts/move_deedee.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
+#install(PROGRAMS
+#  scripts/actuators_interface
+#  scripts/diffdrive_model
+#  scripts/controller
+#  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+#)
+
+catkin_install_python(PROGRAMS
+  scripts/actuators_interface
+  scripts/diffdrive_model
+  scripts/controller
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 ## Mark executables and/or libraries for installation
 # install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_node

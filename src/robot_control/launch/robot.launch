@@ -3,11 +3,23 @@
 
   <node name="actuators_interface"
         pkg="robot_control"
-        type="actuators_interface.py"
+        type="actuators_interface"
         required="false"/>
 
-  <!--node name="controller"
+  <node name="diff_drive_model"
         pkg="robot_control"
-        type="move_deedee.py"
+        type="diffdrive_model"
+        required="false"/>
+
+  <node name="controller"
+        pkg="robot_control"
+        type="controller"
+        output="screen"
+        required="false"/>
+
+  <!--node name="teleops_node"
+        pkg="teleop_twist_keyboard"
+        type="teleop_twist_keyboard"
         required="false"/-->
+
 </launch>
