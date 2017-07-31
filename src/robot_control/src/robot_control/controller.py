@@ -123,6 +123,3 @@ class Controller:
     '''
     return K*err
 
-if __name__=="__main__":
-  Controller()
-

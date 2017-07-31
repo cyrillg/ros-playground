@@ -1,13 +1,13 @@
-#!/usr/bin/env python
+#! /usr/bin/env python
 
 import rospy
 from rospy import Subscriber, Publisher
 from robot_control.msg import WheelSpeeds
 from std_msgs.msg import Float64
 
-class ActuatorsInterface:
+class MotorsDriverSim:
   def __init__(self):
-    rospy.init_node("actuators_interface")
+    rospy.init_node("motors_driver_sim")
     rospy.sleep(0.5)
 
     self.wheel_speeds_sub = Subscriber("/wheel_speeds",
@@ -28,5 +28,3 @@ class ActuatorsInterface:
     self.l_wheel_cmd_pub.publish(float(speeds.left))
     self.r_wheel_cmd_pub.publish(float(speeds.right))
 
-if __name__=="__main__":
-  ActuatorsInterface()

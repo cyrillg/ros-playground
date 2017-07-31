@@ -5,7 +5,7 @@ from rospy import Subscriber, Publisher
 from robot_control.msg import WheelSpeeds
 from geometry_msgs.msg import Twist
 
-class DiffDriveModel:
+class DiffDrive:
   def __init__(self):
     rospy.init_node("diff_drive_model")
     rospy.sleep(0.5)
@@ -40,5 +40,3 @@ class DiffDriveModel:
 
     return (u0, u1)
 
-if __name__=="__main__":
-  DiffDriveModel()

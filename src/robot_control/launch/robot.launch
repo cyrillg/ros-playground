@@ -1,15 +1,15 @@
 <launch>
   <include file="$(find deedee_gazebo)/launch/deedee.launch"/>
 
-  <node name="deedee_driver"
-        pkg="robot_control"
-        type="deedee_driver"
-        required="false"/>
+  <node name="motors_driver"
+        pkg="deedee_driver"
+        type="motors_driver_sim"
+        required="true"/>
 
-  <node name="diffdrive_model"
+  <node name="diff_drive_model"
         pkg="robot_control"
-        type="diffdrive_model"
-        required="false"/>
+        type="diff_drive_model"
+        required="true"/>
 
   <node name="controller"
         pkg="robot_control"
