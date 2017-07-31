@@ -167,9 +167,9 @@ include_directories(
 #)
 
 catkin_install_python(PROGRAMS
-  scripts/actuators_interface
+  scripts/deedee_driver
   scripts/diffdrive_model
-  scripts/controller
+  bin/controller
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 ## Mark executables and/or libraries for installation
