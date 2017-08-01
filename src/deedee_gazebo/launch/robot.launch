@@ -1,0 +1,47 @@
+<launch>
+
+  <arg name="model" default="$(find deedee_description)/urdf/deedee.xacro"/>
+  <arg name="x" default="0.0"/>
+  <arg name="y" default="0.0"/>
+  <arg name="z" default="0.0"/>
+
+  <param name="robot_description" command="$(find xacro)/xacro $(arg model)" />
+
+  <!-- push robot_description to factory and spawn robot in gazebo -->
+  <node name="urdf_spawner"
+        pkg="gazebo_ros"
+        type="spawn_model"
+        args="-x $(arg x)
+              -y $(arg y)
+              -z $(arg z)
+              -urdf
+              -model robot
+              -param robot_description"
+        respawn="false"
+        output="screen"
+  />
+
+  <node pkg="robot_state_publisher" type="robot_state_publisher"  name="robot_state_publisher">
+    <param name="publish_frequency" type="double" value="30.0" />
+  </node>
+
+  <rosparam command="load"
+            file="$(find deedee_gazebo)/config/joints.yaml"
+            ns="deedee_joint_state_controller" />
+
+  <rosparam command="load"
+            file="$(find deedee_gazebo)/config/left_wheel.yaml"
+            ns="deedee_left_wheel_controller" />
+
+  <rosparam command="load"
+            file="$(find deedee_gazebo)/config/right_wheel.yaml"
+            ns="deedee_right_wheel_controller" />
+
+  <node name="deedee_controller_spawner"
+        pkg="controller_manager"
+        type="spawner"
+        args="deedee_joint_state_controller
+              deedee_left_wheel_controller
+              deedee_right_wheel_controller
+              --shutdown-timeout 3"/>
+</launch>

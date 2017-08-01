@@ -6,8 +6,7 @@
   <arg name="gui" default="false"/>
   <arg name="headless" default="true"/>
   <arg name="debug" default="false"/>
-  <arg name="world" default="$(find deedee_gazebo)/worlds/deedee.world"/>
-  <arg name="model" default="$(find deedee_description)/urdf/deedee.xacro"/>
+  <arg name="world" default="$(find gazebo_ros)/launch/empty_world.launch"/>
   <arg name="x" default="0.0"/>
   <arg name="y" default="0.0"/>
   <arg name="z" default="0.0"/>
@@ -21,25 +20,5 @@
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
     <arg name="headless" value="$(arg headless)"/>
   </include>
-
-  <param name="robot_description" command="$(find xacro)/xacro $(arg model)" />
-
-  <!-- push robot_description to factory and spawn robot in gazebo -->
-  <node name="urdf_spawner"
-        pkg="gazebo_ros"
-        type="spawn_model"
-        args="-x $(arg x)
-              -y $(arg y)
-              -z $(arg z)
-              -urdf
-              -model robot
-              -param robot_description"
-        respawn="false"
-        output="screen"
-  />
-
-  <node pkg="robot_state_publisher" type="robot_state_publisher"  name="robot_state_publisher">
-    <param name="publish_frequency" type="double" value="30.0" />
-  </node>
 
 </launch>

@@ -1,22 +1,40 @@
 <launch>
-  <include file="$(find deedee_gazebo)/launch/deedee.launch"/>
 
+  <!-- Plant -->
+  <arg name="world" default="$(find deedee_gazebo)/worlds/deedee.world"/>
+
+  <include file="$(find deedee_gazebo)/launch/world.launch">
+    <arg name="world" value="$(arg world)" />
+  </include>
+  <include file="$(find deedee_gazebo)/launch/robot.launch">
+    <arg name="z" value="0.35" />
+  </include>
+
+
+  <!-- Actuators/sensors drivers -->
   <node name="motors_driver"
         pkg="deedee_driver"
         type="motors_driver_sim"
         required="true"/>
 
+
+  <!-- Movement model -->
   <node name="diff_drive_model"
         pkg="robot_control"
         type="diff_drive_model"
         required="true"/>
 
+
+  <!-- Observer -->
+  <!-- TODO -->
+
+
+  <!-- Controller -->
   <node name="controller"
         pkg="robot_control"
         type="controller"
         output="screen"
         required="false"/>
-
   <!--node name="teleops_node"
         pkg="teleop_twist_keyboard"
         type="teleop_twist_keyboard"
