@@ -1,21 +1,25 @@
 <launch>
+  <arg name="sim_plant" default="true"/>
+  <arg name="autonomous" default="true"/>
 
   <!-- Plant -->
-  <arg name="world" default="$(find deedee_gazebo)/worlds/deedee.world"/>
+  <group if="$(arg sim_plant)">
+    <arg name="world" default="$(find deedee_gazebo)/worlds/deedee.world"/>
 
-  <include file="$(find deedee_gazebo)/launch/world.launch">
-    <arg name="world" value="$(arg world)" />
-  </include>
-  <include file="$(find deedee_gazebo)/launch/robot.launch">
-    <arg name="z" value="0.35" />
-  </include>
+    <include file="$(find deedee_gazebo)/launch/world.launch">
+      <arg name="world" value="$(arg world)" />
+    </include>
+    <include file="$(find deedee_gazebo)/launch/robot.launch">
+      <arg name="z" value="0.35" />
+    </include>
+  </group>
 
 
-  <!-- Actuators/sensors drivers >
+  <!-- Actuators/sensors drivers -->
   <node name="motors_driver"
         pkg="deedee_driver"
         type="motors_driver_sim"
-        required="true"/-->
+        required="true"/>
 
 
   <!-- Movement model -->
@@ -31,13 +35,15 @@
 
   <!-- Controller -->
   <node name="controller"
+        if="$(arg autonomous)"
         pkg="robot_control"
         type="controller"
         output="screen"
         required="false"/>
-  <!--node name="teleops_node"
+  <node name="teleops_node"
+        unless="$(arg autonomous)"
         pkg="teleop_twist_keyboard"
         type="teleop_twist_keyboard"
-        required="false"/-->
+        required="false"/>
 
 </launch>
