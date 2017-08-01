@@ -2,5 +2,5 @@
 
 from robot_control.movement_models import DiffDrive
 
-if __name__="__main__":
+if __name__=="__main__":
   DiffDrive()
