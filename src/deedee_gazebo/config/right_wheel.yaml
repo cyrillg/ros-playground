@@ -1,2 +1,0 @@
-type: "velocity_controllers/JointVelocityController"
-joint: right_wheel_joint

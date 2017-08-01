@@ -21,27 +21,20 @@
         output="screen"
   />
 
-  <node pkg="robot_state_publisher" type="robot_state_publisher"  name="robot_state_publisher">
-    <param name="publish_frequency" type="double" value="30.0" />
-  </node>
-
-  <rosparam command="load"
-            file="$(find deedee_gazebo)/config/joints.yaml"
-            ns="deedee_joint_state_controller" />
-
-  <rosparam command="load"
-            file="$(find deedee_gazebo)/config/left_wheel.yaml"
-            ns="deedee_left_wheel_controller" />
-
-  <rosparam command="load"
-            file="$(find deedee_gazebo)/config/right_wheel.yaml"
-            ns="deedee_right_wheel_controller" />
+  <rosparam command="load" file="$(find deedee_gazebo)/config/joints.yaml"
+  />
 
   <node name="deedee_controller_spawner"
         pkg="controller_manager"
         type="spawner"
-        args="deedee_joint_state_controller
-              deedee_left_wheel_controller
-              deedee_right_wheel_controller
+        ns="/deedee"
+        args="joint_state_controller
+              left_wheel_controller
+              right_wheel_controller
               --shutdown-timeout 3"/>
+
+  <node pkg="robot_state_publisher" type="robot_state_publisher"  name="robot_state_publisher">
+    <param name="publish_frequency" type="double" value="30.0" />
+  </node>
+
 </launch>

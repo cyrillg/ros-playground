@@ -11,11 +11,11 @@
   </include>
 
 
-  <!-- Actuators/sensors drivers -->
+  <!-- Actuators/sensors drivers >
   <node name="motors_driver"
         pkg="deedee_driver"
         type="motors_driver_sim"
-        required="true"/>
+        required="true"/-->
 
 
   <!-- Movement model -->
