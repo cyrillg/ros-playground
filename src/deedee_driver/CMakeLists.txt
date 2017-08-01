@@ -164,7 +164,7 @@ include_directories(
 # )
 
 catkin_install_python(PROGRAMS
-  bin/motors_driver_sim
+  nodes/motors_driver_sim
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 ## Mark executables and/or libraries for installation

@@ -166,8 +166,8 @@ include_directories(
 #)
 
 catkin_install_python(PROGRAMS
-  bin/diff_drive_model
-  bin/controller
+  nodes/diff_drive_model
+  nodes/controller
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 ## Mark executables and/or libraries for installation
