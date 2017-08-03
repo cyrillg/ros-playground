@@ -1,13 +1,13 @@
 # The joint state controller handles publishing transforms for any moving joints
 deedee:
-  joint_state_controller:
+  joint_state_publisher:
     type: "joint_state_controller/JointStateController"
     publish_rate: 50
 
-  left_wheel_controller:
+  left_wheel_driver:
     type: "velocity_controllers/JointVelocityController"
     joint: left_wheel_joint
 
-  right_wheel_controller:
+  right_wheel_driver:
     type: "velocity_controllers/JointVelocityController"
     joint: right_wheel_joint

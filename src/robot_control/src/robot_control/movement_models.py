@@ -13,11 +13,11 @@ class DiffDrive:
     self.L = 0.6
     self.r = 0.15
 
-    self.wheel_speeds_sub = Subscriber("/cmd_vel",
+    self.wheel_speeds_sub = Subscriber("twist_cmd",
                                        Twist,
                                        self.on_twist)
 
-    self.wheel_speeds_pub = Publisher("/wheel_speeds",
+    self.wheel_speeds_pub = Publisher("wheel_speeds_cmd",
                                       WheelSpeeds,
                                       queue_size=10)
 

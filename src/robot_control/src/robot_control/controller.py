@@ -4,9 +4,7 @@ import rospy
 from robot_control.utils import *
 from copy import deepcopy
 from rospy import Subscriber, Publisher
-from tf.transformations import euler_from_quaternion as rpy_from_q
-from geometry_msgs.msg import Pose, Pose2D, Twist
-from gazebo_msgs.msg import ModelStates
+from geometry_msgs.msg import Pose2D, Twist
 
 class Controller:
   ''' Closed loop controller definition
@@ -33,10 +31,10 @@ class Controller:
     self.wp_idx = 1
     self.current_wp = self.path[0]
 
-    self.pose_sub = Subscriber("/gazebo/model_states",
-                               ModelStates,
-                               self.on_model_states)
-    self.cmd_vel_pub = Publisher("/cmd_vel",
+    self.pose_sub = Subscriber("state",
+                               Pose2D,
+                               self.on_pose)
+    self.cmd_vel_pub = Publisher("twist_cmd",
                                  Twist,
                                  queue_size=10)
 
@@ -47,17 +45,14 @@ class Controller:
 
     self.run()
 
-  def on_model_states(self, state):
-    quaternion = (state.pose[1].orientation.x,
-                  state.pose[1].orientation.y,
-                  state.pose[1].orientation.z,
-                  state.pose[1].orientation.w)
-    rpy = rpy_from_q(quaternion)
-    self.p = Pose2D(x=state.pose[1].position.x,
-                    y=state.pose[1].position.y,
-                    theta=rpy[2])
+  def on_pose(self, pose):
+    ''' Store the incoming new pose
+    '''
+    self.p = pose
 
   def run(self):
+    ''' Main loop
+    '''
     rate = rospy.Rate(10)
     t_start = rospy.Time.now().to_sec()
     while not self.is_end and not rospy.is_shutdown():
@@ -66,7 +61,7 @@ class Controller:
       rate.sleep()
 
   def generate_cmd(self, t):
-    ''' Main function to generate the current wheel angular speed inputs
+    ''' Generate the current wheel angular speed inputs
     '''
     if self.p:
       p = deepcopy(self.p)

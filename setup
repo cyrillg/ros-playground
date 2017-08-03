@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-source $HOME/ros_projects/ros-playground/devel/setup.bash

@@ -10,15 +10,15 @@ class MotorsDriverSim:
     rospy.init_node("motors_driver_sim")
     rospy.sleep(0.5)
 
-    self.wheel_speeds_sub = Subscriber("/wheel_speeds",
+    self.wheel_speeds_sub = Subscriber("wheel_speeds_cmd",
                                        WheelSpeeds,
                                        self.on_wheel_speeds)
 
 
-    self.l_wheel_cmd_pub = Publisher("/deedee_left_wheel_controller/command",
+    self.l_wheel_cmd_pub = Publisher("left_wheel_driver/command",
                                      Float64,
                                      queue_size=10)
-    self.r_wheel_cmd_pub = Publisher("/deedee_right_wheel_controller/command",
+    self.r_wheel_cmd_pub = Publisher("right_wheel_driver/command",
                                      Float64,
                                      queue_size=10)
 
