@@ -9,7 +9,6 @@ project(robot_control)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   rospy
-  std_msgs
   message_generation
 )
 
@@ -169,7 +168,8 @@ catkin_install_python(PROGRAMS
   nodes/diff_drive_model
   nodes/controller
   nodes/observer
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 ## Mark executables and/or libraries for installation
 # install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_node
