@@ -3,7 +3,7 @@
 import rospy
 import subprocess
 
-class WorldLauncher:
+class MainLauncher:
   ''' Node spawning the environment with respect to the global configs
   '''
   def __init__(self):
@@ -18,7 +18,6 @@ class WorldLauncher:
 
     self.retrieve_config()
     self.build_cmd()
-    print "\n\n\n",self.cmd,"\n\n\n"
     self.spawn()
 
   def retrieve_config(self):
@@ -33,11 +32,11 @@ class WorldLauncher:
   def spawn(self):
     subprocess.call(self.cmd, shell=True)
 
-class WebLauncher:
+class GzwebManager:
   ''' Node spawning the environment with respect to the global configs
   '''
   def __init__(self):
-    rospy.init_node("web_interface_spawner")
+    rospy.init_node("gzweb_manager")
     rospy.sleep(0.5)
 
     # Configs
@@ -46,19 +45,17 @@ class WebLauncher:
 
     self.retrieve_config()
     self.cmd = "{}/start_gzweb.sh".format(self.configs["gzweb_path"])
-    print "\n\n\n",self.cmd,"\n\n\n"
     if self.configs["gzweb_enable"]:
-      self.spawn()
+      subprocess.call("{}/start_gzweb.sh".format(self.configs["gzweb_path"]),
+                      shell=True)
 
     rospy.on_shutdown(self.shutdown_hook)
     rospy.spin()
 
   def retrieve_config(self):
+    gzweb_params = rospy.get_param("gzweb")
     for setting in self.configs.keys():
-      self.configs[setting] = rospy.get_param("/{}".format(setting))
-
-  def spawn(self):
-    subprocess.call(self.cmd, shell=True)
+      self.configs[setting] = gzweb_params[setting]
 
   def shutdown_hook(self):
     print "Stopping webserver!"

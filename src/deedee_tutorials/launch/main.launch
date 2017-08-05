@@ -1,6 +1,6 @@
 <launch>
   <rosparam command="load"
-            file="$(find deedee_tutorials)/config/plant.yaml"
+            file="$(find deedee_tutorials)/config/main.yaml"
   />
 
   <node name="main_launcher"
@@ -9,8 +9,8 @@
         output="screen"
   />
 
-  <node name="web_launcher"
+  <node name="gzweb_manager"
         pkg="deedee_tutorials"
-        type="web_launcher"
+        type="gzweb_manager"
   />
 </launch>

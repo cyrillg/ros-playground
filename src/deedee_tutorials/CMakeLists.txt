@@ -164,7 +164,7 @@ include_directories(
 
 catkin_install_python(PROGRAMS
   nodes/main_launcher
-  nodes/web_launcher
+  nodes/gzweb_manager
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
