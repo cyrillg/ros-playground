@@ -44,13 +44,12 @@ class GzwebManager:
                     "gzweb_path": ""}
 
     self.retrieve_config()
-    self.cmd = "{}/start_gzweb.sh".format(self.configs["gzweb_path"])
     if self.configs["gzweb_enable"]:
+      self.cmd = "{}/start_gzweb.sh".format(self.configs["gzweb_path"])
       subprocess.call("{}/start_gzweb.sh".format(self.configs["gzweb_path"]),
                       shell=True)
-
-    rospy.on_shutdown(self.shutdown_hook)
-    rospy.spin()
+      rospy.on_shutdown(self.shutdown_hook)
+      rospy.spin()
 
   def retrieve_config(self):
     gzweb_params = rospy.get_param("gzweb")
