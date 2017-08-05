@@ -52,7 +52,7 @@
     <node name="teleops_node"
           unless="$(arg autonomous)"
           pkg="teleop_twist_keyboard"
-          type="teleop_twist_keyboard"
+          type="teleop_twist_keyboard.py"
           required="false">
       <remap from="cmd_vel" to="twist_cmd"/>
     </node>

@@ -1,0 +1,6 @@
+robot_name: "deedee"
+sim_plant: true
+autonomous: true
+
+gzweb_enable: true
+gzweb_path: "/home/cyrill/gzweb"

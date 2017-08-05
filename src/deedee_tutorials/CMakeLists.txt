@@ -103,7 +103,7 @@ catkin_python_setup()
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES deedee_tutorials
-  CATKIN_DEPENDS rospy
+  CATKIN_DEPENDS rospy std_msgs
 #  DEPENDS system_lib
 )
 
@@ -163,7 +163,8 @@ include_directories(
 # )
 
 catkin_install_python(PROGRAMS
-  nodes/launcher
+  nodes/main_launcher
+  nodes/web_launcher
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
