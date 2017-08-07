@@ -15,6 +15,9 @@
 
   <!-- #################    MACROS     ##################### -->
 
+  <xacro:property name="baseweight" value="50.0" />
+  <xacro:property name="wheelweight" value="10.0" />
+  <xacro:property name="castorweight" value="5" />
   <xacro:property name="basewidth" value="0.4" />
   <xacro:property name="baselength" value="0.6" />
   <xacro:property name="baseheight" value="0.2" />
@@ -27,12 +30,12 @@
   <xacro:macro name="box_inertial" params="mass dx dy dz">
     <inertial>
       <mass value="${mass}" />
-      <inertia ixx="${((dy*dy)+(dz*dz))/3}"
+      <inertia ixx="${mass*((dy*dy)+(dz*dz))/3}"
                ixy="0.0"
                ixz="0.0"
-               iyy="${(dx*dx+dz*dz)/3}"
+               iyy="${mass*(dx*dx+dz*dz)/3}"
                iyz="0.0"
-               izz="${(dx*dx+dy*dy)/3}"
+               izz="${mass*(dx*dx+dy*dy)/3}"
       />
     </inertial>
   </xacro:macro>
@@ -40,24 +43,24 @@
   <xacro:macro name="cylinder_inertial" params="mass radius height">
     <inertial>
       <mass value="${mass}" />
-      <inertia ixx="${radius*radius/2}"
+      <inertia ixx="${mass*radius*radius/2}"
                ixy="0.0"
                ixz="0.0"
-               iyy="${radius*radius/4 + height*height/3}"
+               iyy="${mass*radius*radius/4 + height*height/3}"
                iyz="0.0"
-               izz="${radius*radius/4 + height*height/3}" />
+               izz="${mass*radius*radius/4 + height*height/3}" />
     </inertial>
   </xacro:macro>
 
   <xacro:macro name="sphere_inertial" params="mass radius">
     <inertial>
       <mass value="${mass}" />
-      <inertia ixx="${2*radius*radius/3}"
+      <inertia ixx="${mass*2*radius*radius/3}"
                ixy="0.0"
                ixz="0.0"
-               iyy="${2*radius*radius/3}"
+               iyy="${mass*2*radius*radius/3}"
                iyz="0.0"
-               izz="${2*radius*radius/3}" />
+               izz="${mass*2*radius*radius/3}" />
     </inertial>
   </xacro:macro>
 
@@ -73,14 +76,14 @@
         <material name="black"/>
       </visual>
       <collision>
-        <origin xyz="0 0 0" rpy="${side*pi/2} 0 0" />
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0" />
         <geometry>
           <cylinder radius="${wheelradius}" length="${wheelwidth}"/>
         </geometry>
       </collision>
-      <xacro:cylinder_inertial mass="0.2"
-                            radius="${wheelradius}"
-                            height="${wheelwidth}"/>
+      <cylinder_inertial mass="${wheelweight}"
+                         radius="${wheelradius}"
+                         height="${wheelwidth}"/>
     </link>
     <joint name="${prefix}_wheel_joint" type="continuous">
       <axis xyz="0 1 0" rpy="0 0 0" />
@@ -92,13 +95,15 @@
               rpy="0 0 0"
       />
       <limit effort="2000" velocity="4.0"/>
+      <dynamics damping="0.7"/>
     </joint>
 
     <gazebo reference="${prefix}_wheel">
+      <dampignFactor value="0.5"/>
       <mu1 value="200.0"/>
-      <mu2 value="100.0"/>
-      <kp value="10000000.0" />
-      <kd value="1.0" />
+      <mu2 value="200.0"/>
+      <kp value="100000.0"/>
+      <kp value="1.0"/>
       <material>Gazebo/Grey</material>
     </gazebo>
 
@@ -128,10 +133,10 @@
         <box size="${baselength} ${basewidth} ${baseheight}"/>
       </geometry>
     </collision>
-    <xacro:box_inertial mass="1"
-                        dx="${baselength}"
-                        dy="${basewidth}"
-                        dz="${baseheight}"
+    <box_inertial mass="${baseweight}"
+                  dx="${baselength}"
+                  dy="${basewidth}"
+                  dz="${baseheight}"
     />
 
   </link>
@@ -152,8 +157,8 @@
       </geometry>
     </collision>
 
-    <xacro:sphere_inertial mass="1"
-                           radius="${castorradius}"
+    <sphere_inertial mass="${castorweight}"
+                     radius="${castorradius}"
     />
   </link>
   <joint name="castor_joint" type="fixed">
@@ -168,8 +173,8 @@
   </gazebo>
 
   <!-- Wheels -->
-  <xacro:wheel prefix="left" side="1"/>
-  <xacro:wheel prefix="right" side="-1"/>
+  <wheel prefix="left" side="1"/>
+  <wheel prefix="right" side="-1"/>
 
 
   <!-- ###############     Gazebo link     ############### -->

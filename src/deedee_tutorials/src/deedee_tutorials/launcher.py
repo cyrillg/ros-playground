@@ -13,11 +13,13 @@ class MainLauncher:
     # Configs
     self.configs = {"robot_name": "deedee",
                     "sim_plant": "true",
-                    "autonomous": "true"}
+                    "autonomous": "true",
+                    "sim_display": "none"}
     self.cmd = ""
 
     self.retrieve_config()
     self.build_cmd()
+    print self.cmd
     self.spawn()
 
   def retrieve_config(self):
@@ -27,7 +29,13 @@ class MainLauncher:
   def build_cmd(self):
     self.cmd = "roslaunch deedee_tutorials follow_waypoints.launch"
     for setting in self.configs.keys():
-      self.cmd += " {}:={}".format(setting, self.configs[setting])
+      if setting=="sim_display":
+        if self.configs[setting] in ["gzclient", "both"]:
+          self.cmd += " gui:=true headless:=false"
+        else:
+          self.cmd += " gui:=false headless:=true"
+      else:
+        self.cmd += " {}:={}".format(setting, self.configs[setting])
 
   def spawn(self):
     subprocess.call(self.cmd, shell=True)
@@ -40,11 +48,11 @@ class GzwebManager:
     rospy.sleep(0.5)
 
     # Configs
-    self.configs = {"gzweb_enable": "true",
+    self.configs = {"sim_display": "none",
                     "gzweb_path": ""}
 
     self.retrieve_config()
-    if self.configs["gzweb_enable"]:
+    if self.configs["sim_display"] in ["gzweb", "both"]:
       self.cmd = "{}/start_gzweb.sh".format(self.configs["gzweb_path"])
       subprocess.call("{}/start_gzweb.sh".format(self.configs["gzweb_path"]),
                       shell=True)
@@ -52,9 +60,8 @@ class GzwebManager:
       rospy.spin()
 
   def retrieve_config(self):
-    gzweb_params = rospy.get_param("gzweb")
     for setting in self.configs.keys():
-      self.configs[setting] = gzweb_params[setting]
+      self.configs[setting] = rospy.get_param("/{}".format(setting))
 
   def shutdown_hook(self):
     print "Stopping webserver!"

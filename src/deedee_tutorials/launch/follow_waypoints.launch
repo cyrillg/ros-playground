@@ -2,6 +2,8 @@
   <arg name="robot_name" default="deedee"/>
   <arg name="sim_plant" default="true"/>
   <arg name="autonomous" default="true"/>
+  <arg name="gui" default="false"/>
+  <arg name="headless" default="true"/>
 
   <!-- Plant -->
   <group if="$(arg sim_plant)">
@@ -9,12 +11,14 @@
 
     <include file="$(find deedee_gazebo)/launch/world.launch">
       <arg name="world" value="$(arg world)" />
+      <arg name="gui" default="$(arg gui)"/>
+      <arg name="headless" default="$(arg headless)"/>
     </include>
 
     <include if="$(arg sim_plant)"
               file="$(find deedee_gazebo)/launch/robot.launch">
       <arg name="robot_name" value="$(arg robot_name)" />
-      <arg name="z" value="0.35" />
+      <arg name="z" value="0.25" />
     </include>
   </group>
 

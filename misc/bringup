@@ -5,6 +5,6 @@ export HOME=/home/$USER
 
 echo "Sourcing environment"
 source /opt/ros/kinetic/setup.bash
-source $HOME/ros_projects/ros-playground/devel/setup.bash
+source $HOME/ros-playground/devel/setup.bash
 
 roslaunch deedee_tutorials main.launch
