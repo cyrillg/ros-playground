@@ -4,11 +4,11 @@
     <physics name="ode_70iters" type="ode">
       <real_time_update_rate>100</real_time_update_rate>
       <max_step_size>0.01</max_step_size>
-      <ode>
+      <!--ode>
         <solver>
           <type>quick</type>
         </solver>
-      </ode>
+      </ode-->
     </physics>
 
     <!-- A global light source -->
