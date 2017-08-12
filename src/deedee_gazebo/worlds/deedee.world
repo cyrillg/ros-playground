@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <sdf version="1.5">
   <world name="default">
-    <physics name="ode_70iters" type="ode">
+    <physics name="ode" type="ode">
       <real_time_update_rate>100</real_time_update_rate>
       <max_step_size>0.01</max_step_size>
       <!--ode>
@@ -17,9 +17,10 @@
     </include>
     <!-- A ground plane -->
     <include>
-      <uri>model://ground_plane</uri>
+      <uri>model://willowgarage</uri>
     </include>
 
-    <plugin name="gazebo_custom_plugins" filename="libgazebo_custom_plugins.so"/>
+    <!-- plugin name="gazebo_custom_plugins"
+                filename="libgazebo_custom_plugins.so"/-->
   </world>
 </sdf>

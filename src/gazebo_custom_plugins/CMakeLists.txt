@@ -12,6 +12,7 @@ add_compile_options(-std=c++11)
 find_package(catkin REQUIRED COMPONENTS
   gazebo_ros
   roscpp
+  std_msgs
 )
 
 # Depend on system install of Gazebo
@@ -50,5 +51,6 @@ catkin_package(
   DEPENDS
     roscpp
     gazebo_ros
+    std_msgs
 )
 

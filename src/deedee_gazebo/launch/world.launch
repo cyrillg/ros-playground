@@ -6,7 +6,7 @@
   <arg name="gui" default="false"/>
   <arg name="headless" default="true"/>
   <arg name="debug" default="false"/>
-  <arg name="world" default="$(find gazebo_ros)/launch/empty_world.launch"/>
+  <arg name="world" default="willowgarage.world"/>
   <arg name="x" default="0.0"/>
   <arg name="y" default="0.0"/>
   <arg name="z" default="0.0"/>

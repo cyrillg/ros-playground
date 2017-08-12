@@ -15,9 +15,9 @@
 
   <!-- #################    MACROS     ##################### -->
 
-  <xacro:property name="baseweight" value="50.0" />
-  <xacro:property name="wheelweight" value="10.0" />
-  <xacro:property name="castorweight" value="5" />
+  <xacro:property name="baseweight" value="2.0" />
+  <xacro:property name="wheelweight" value="0.5" />
+  <xacro:property name="castorweight" value="0.4" />
   <xacro:property name="basewidth" value="0.4" />
   <xacro:property name="baselength" value="0.6" />
   <xacro:property name="baseheight" value="0.2" />
@@ -86,7 +86,10 @@
                          height="${wheelwidth}"/>
     </link>
     <gazebo reference="${prefix}_wheel">
-      <dampingFactor>0.5</dampingFactor>
+      <mu1 value="200.0"/>
+      <mu2 value="100.0"/>
+      <kp value="10000000.0" />
+      <kd value="1.0" />
       <material>Gazebo/Grey</material>
     </gazebo>
 
@@ -100,10 +103,10 @@
               rpy="0 0 0"
       />
       <limit effort="2000" velocity="4.0"/>
-      <dynamics damping="0.7" friction="1.0"/>>
+      <dynamics damping="0.3" friction="30.0"/>>
     </joint>
     <gazebo reference="${prefix}_wheel_joint">
-      <dampingFactor>0.5</dampingFactor>
+      <dampingFactor>0.1</dampingFactor>
       <material>Gazebo/Grey</material>
     </gazebo>
 
@@ -156,7 +159,6 @@
         <sphere radius="${castorradius}"/>
       </geometry>
     </collision>
-
     <sphere_inertial mass="${castorweight}"
                      radius="${castorradius}"
     />
