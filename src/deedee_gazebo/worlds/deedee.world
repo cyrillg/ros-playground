@@ -15,6 +15,10 @@
     <include>
       <uri>model://sun</uri>
     </include>
+    <!-- A global light source -->
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
     <!-- A ground plane -->
     <include>
       <uri>model://willowgarage</uri>
