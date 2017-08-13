@@ -1,10 +1,11 @@
 #! /usr/bin/env bash
 
-export USER=cyrill
-export HOME=/home/$USER
+# This script requires the WS environment variable to be set
+# For convenience, it can be done in the bashrc
 
 echo "Sourcing environment"
 source /opt/ros/kinetic/setup.bash
-source $HOME/ros-playground/devel/setup.bash
+source $WS/ros-playground/devel/setup.bash
 
 roslaunch deedee_tutorials main.launch
+
