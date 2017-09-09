@@ -141,8 +141,8 @@
                   dy="${basewidth}"
                   dz="${baseheight}"
     />
-
   </link>
+
 
   <!-- Castor wheel -->
   <link name="castor_link">
@@ -185,10 +185,6 @@
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
       <robotNamespace>/deedee</robotNamespace>
     </plugin>
-    <plugin name="gazebo_custom_plugins" filename="libgazebo_custom_plugins.so">
-      <velocity>25</velocity>
-    </plugin>
   </gazebo>
-
 
 </robot>

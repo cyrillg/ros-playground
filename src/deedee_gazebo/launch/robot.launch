@@ -6,7 +6,7 @@
   <arg name="y" default="0.0"/>
   <arg name="z" default="0.0"/>
 
-  <param name="deedee_urdf" command="$(find xacro)/xacro $(arg model)"/>
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg model)"/>
 
   <!-- push robot_description to factory and spawn robot in gazebo -->
   <node name="urdf_spawner"
@@ -17,7 +17,7 @@
               -z $(arg z)
               -urdf
               -model $(arg robot_name)
-              -param deedee_urdf"
+              -param robot_description"
         respawn="false"
         output="screen"
   />

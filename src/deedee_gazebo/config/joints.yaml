@@ -7,11 +7,7 @@ deedee:
   left_wheel_driver:
     type: "velocity_controllers/JointVelocityController"
     joint: left_wheel_joint
-    pid:
-      p: 20.0
 
   right_wheel_driver:
     type: "velocity_controllers/JointVelocityController"
     joint: right_wheel_joint
-    pid:
-      p: 20.0

@@ -24,7 +24,6 @@ class DiffDrive:
     rospy.spin()
 
   def on_twist(self, vel):
-    print "New velocity!"
     (u0, u1) = self.transform(vel.linear.x, vel.angular.z)
 
     msg = WheelSpeeds()
