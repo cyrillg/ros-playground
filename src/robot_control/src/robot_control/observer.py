@@ -46,14 +46,16 @@ class IdealObs:
             The Gazebo model state is converted to retrain only the 2D pose
             of the mobile robot
       '''
-      quaternion = (state.pose[1].orientation.x,
-                    state.pose[1].orientation.y,
-                    state.pose[1].orientation.z,
-                    state.pose[1].orientation.w)
+      idx = state.name.index("deedee")
+
+      quaternion = (state.pose[idx].orientation.x,
+                    state.pose[idx].orientation.y,
+                    state.pose[idx].orientation.z,
+                    state.pose[idx].orientation.w)
       rpy = rpy_from_q(quaternion)
 
-      state = Pose2D(x=state.pose[1].position.x,
-                     y=state.pose[1].position.y,
+      state = Pose2D(x=state.pose[idx].position.x,
+                     y=state.pose[idx].position.y,
                      theta=rpy[2])
 
       self.state_pub.publish(state)
