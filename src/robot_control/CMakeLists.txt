@@ -166,7 +166,7 @@ include_directories(
 #)
 
 catkin_install_python(PROGRAMS
-  nodes/diff_drive_model
+  nodes/movement_model
   nodes/controller
   nodes/observer
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

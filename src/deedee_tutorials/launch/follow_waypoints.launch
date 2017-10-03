@@ -32,9 +32,9 @@
 
 
     <!-- Movement model -->
-    <node name="diff_drive_model"
+    <node name="movement_model"
           pkg="robot_control"
-          type="diff_drive_model"
+          type="movement_model"
           required="true"/>
 
 
