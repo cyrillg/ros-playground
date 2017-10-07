@@ -85,7 +85,10 @@ class LOS:
   '''
   def compute_error(self, p, wp):
     th_ref = arctan2(wp[1]-p.y,wp[0]-p.x)
-    th_err = normalize(th_ref-p.theta)
+    if th_ref!=0:
+      th_err = normalize(th_ref-p.theta)
+    else:
+      th_err = 0
 
     return th_err
 
