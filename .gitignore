@@ -48,5 +48,8 @@ qtcreator-*
 # Catkin custom files
 CATKIN_IGNORE
 
-# Igonre setup script
+# Setup script
 misc/setup.bash
+
+# Vim
+*.swp
