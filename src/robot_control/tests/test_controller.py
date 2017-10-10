@@ -13,7 +13,7 @@ class TestPID(unittest.TestCase):
   def test_pid_default_correct_output(self):
     ''' Test the output of default PID
 
-        It expects the output to be equal to the input error, since
+        Expect the output to be equal to the input error, since
         the default PID has a gain of 1
     '''
     pid = PID()
@@ -45,8 +45,8 @@ class TestLOS(unittest.TestCase):
   def test_LOS_aligned_target_front(self):
     ''' Test the output of the LOS algo
 
-        It expects the error output to be equal to the 0, since
-        the default PID has a gain of 1
+        Expect the error output to be equal to 0, since
+        target is aligned.
     '''
     wp = [0.0, 1.0]
 
@@ -56,8 +56,8 @@ class TestLOS(unittest.TestCase):
   def test_LOS_aligned_target_behind(self):
     ''' Test the output of the LOS algo
 
-        It expects the error output to be equal to the 0, since
-        the default PID has a gain of 1
+        It expects the error output to be equal to pi, since
+        the target is exactly behind.
     '''
     wp = [2.0, -1.0]
 
@@ -67,8 +67,8 @@ class TestLOS(unittest.TestCase):
   def test_LOS_same_point(self):
     ''' Test the output of the LOS algo
 
-        It expects the error output to be equal to the 0, since
-        the default PID has a gain of 1
+        It expects the error output to be equal to the 0, as special case
+        if robot and target are at the same location.
     '''
     wp = [self.p.x, self.p.y]
 
@@ -91,6 +91,8 @@ class TestController(unittest.TestCase):
                   [2.,3.]]
 
   def test_controller_activate_success(self):
+    ''' Test the activation of the controller on valid new path
+    '''
     self.assertFalse(self.c.active,
                      "Expected inactive Controller at initialization")
     self.c.start(self.path1)
@@ -104,11 +106,15 @@ class TestController(unittest.TestCase):
                      "Expected current idx to be 1")
 
   def test_controller_discard_empty_path(self):
+    ''' Test the non-activation of the controller on a new empty path
+    '''
     self.c.start(self.empty_path)
     self.assertFalse(self.c.active,
                      "Expected inactive Controller after start on empty path")
 
   def test_controller_discard_path_when_active(self):
+    ''' Test that controller ignores a new path if it is already on one
+    '''
     self.c.start(self.path1)
     self.c.start(self.path2)
     self.assertTrue(self.c.active,
@@ -117,6 +123,8 @@ class TestController(unittest.TestCase):
                      "Expected first path to be active. Got second one.")
 
   def test_controller_keep_waypoint_if_too_far(self):
+    ''' Test that controller does not switch to next point if too far from it
+    '''
     self.c.start(self.path1)
     p = Pose2D(0., 0.79, 0.)
 
@@ -127,6 +135,8 @@ class TestController(unittest.TestCase):
                      "Expected waypoint to stay the same")
 
   def test_controller_next_waypoint_if_close_enough(self):
+    ''' Test that controller switches to next point if close enough from it
+    '''
     self.c.start(self.path1)
     p = Pose2D(0., 0.81, 0.)
 
@@ -137,6 +147,8 @@ class TestController(unittest.TestCase):
                      "Expected waypoint to change to next one")
 
   def test_controller_reset_on_end_path(self):
+    ''' Test correct reset of controller upon path completion
+    '''
     self.c.start(self.path1)
 
     poses = [Pose2D(p[0], p[1], 0.) for p in self.path1]
@@ -153,13 +165,18 @@ class TestController(unittest.TestCase):
     self.assertFalse(self.c.active,
                      "Expected inactive Controller after final target reached")
 
-  def test_controller_standby_if_no_pose(self):
+  def test_controller_standby_if_active_but_no_pose(self):
+    ''' Test that controller generates zero speeds if active without pose
+    '''
+    self.c.start(self.path1)
     cmd = self.c.generate_cmd(0., None)
     self.assertEqual(cmd,
                      (0., 0.),
                      "Expected speed=(0,0), got: %s" % str(cmd))
 
   def test_controller_standby_if_not_active(self):
+    ''' Test that controller generates zero speeds if not active
+    '''
     p = Pose2D(0., 0.81, 0.)
     cmd = self.c.generate_cmd(0., p)
     self.assertEqual(cmd,
@@ -167,6 +184,8 @@ class TestController(unittest.TestCase):
                      "Expected speed=(0,0), got: %s" % str(cmd))
 
   def test_controller_standby_if_target_reached(self):
+    ''' Test that controller generates zero speeds upon path completion
+    '''
     self.c.start(self.path1)
 
     poses = [Pose2D(p[0], p[1], 0.) for p in self.path1]
@@ -181,6 +200,8 @@ class TestController(unittest.TestCase):
                      "Expected speed=(0,0), got: %s" % str(cmd))
 
   def test_controller_moving_if_active(self):
+    ''' Test that controller generates non-zero speeds when active with pose
+    '''
     self.c.start(self.path1)
 
     poses = [Pose2D(p[0], p[1], 0.) for p in self.path1]

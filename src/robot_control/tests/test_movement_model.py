@@ -13,6 +13,7 @@ class TestDiffDrive(unittest.TestCase):
   def test_transform(self):
     ''' Test the output of transform function
 
+        Cases:
         - Zero input
         - Spot turn
         - Straight forward
