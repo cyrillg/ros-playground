@@ -2,7 +2,6 @@
 
 class DiffDrive:
   def __init__(self, L, r):
-    # TODO: Should be read from configs
     self.L = L
     self.r = r
 
