@@ -2,7 +2,7 @@
 
 This repository contains the source code for a simulated mobile robot using the
 ROS middleware. It is primarily meant to be used in parallel to the educational
-website [Serial Robotics](https://http://serial-robotics.org/) ( /!\ not ready
+website [Serial Robotics](https://serial-robotics.org/) ( /!\ not ready
 yet /!\ ).
 
 The goal is to experiment on topics like control, localization, path planning,
