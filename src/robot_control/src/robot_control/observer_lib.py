@@ -12,21 +12,41 @@ license: GNU GPL
 
 #!/usr/bin/env python
 
-from tf.transformations import euler_from_quaternion as rpy_from_q
-from geometry_msgs.msg import Pose2D
 
 class IdealObs:
   ''' Definition of an ideal observer
 
       Detail:
         This controller's estimate matches the actual state perfectly
-        Detail:
+        Each sensor status is described by True (active) or False (inactive)
   '''
-  def check_readings(self, sensor_readings):
-    ''' TODO
+  def __init__(self):
+    self.state = None
+
+    self.sensor_list = ["true_state"]
+
+    self.sensor_config = {"true_state": (True, 2.)} # (required, timeout)
+
+    self.active_flag = {"true_state": False}
+
+  def check_readings(self, sensor_readings, t):
+    ''' Check the validity of the sensor data
     '''
-    return ("true_state" in sensor_readings.keys()
-            and sensor_readings["true_state"])
+    # Check for sensor timeout
+    for k in sensor_readings.keys():
+      if (t - sensor_readings[k][1]
+          > self.sensor_config[k][1]):
+        self.active_flag[k] = False
+      else:
+        self.active_flag[k] = True
+
+    # Check that all required sensors are active
+    green_light = True
+    for k in self.sensor_list:
+      green_light = green_light and (self.active_flag[k]
+                                     or not self.sensor_config[k][0])
+
+    return green_light
 
   def estimate(self, sensor_readings):
     ''' Estimation of the robot state
@@ -35,21 +55,8 @@ class IdealObs:
           The Gazebo model state is converted to retrain only the 2D pose
           of the mobile robot
     '''
-    if self.check_readings(sensor_readings):
-      state = sensor_readings["true_state"]
-      idx = state.name.index("deedee")
+    state = sensor_readings["true_state"]
 
-      quaternion = (state.pose[idx].orientation.x,
-                    state.pose[idx].orientation.y,
-                    state.pose[idx].orientation.z,
-                    state.pose[idx].orientation.w)
-      rpy = rpy_from_q(quaternion)
-
-      state = Pose2D(x=state.pose[idx].position.x,
-                     y=state.pose[idx].position.y,
-                     theta=rpy[2])
-    else:
-      state = None
-
+    self.state = state
     return state
 
