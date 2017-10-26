@@ -55,7 +55,7 @@ class IdealObs:
           The Gazebo model state is converted to retrain only the 2D pose
           of the mobile robot
     '''
-    state = sensor_readings["true_state"]
+    state = sensor_readings["true_state"][0]
 
     self.state = state
     return state

@@ -53,7 +53,8 @@ class IdealObsNode:
     t_start = rospy.Time.now().to_sec()
 
     while not rospy.is_shutdown():
-      if self.check_readings(self.sensor_readings, rospy.Time.now().to_sec()):
+      if self.observer.check_readings(self.sensor_readings,
+                                      rospy.Time.now().to_sec()):
         state = self.observer.estimate(self.sensor_readings)
         self.state_pub.publish(state)
 
