@@ -6,9 +6,16 @@ from rospy import Subscriber, Publisher
 
 from geometry_msgs.msg import Pose2D
 from gazebo_msgs.msg import ModelStates
+from tf.transformations import euler_from_quaternion as rpy_from_q
 
 class IdealObsNode:
   ''' Ideal observer node
+
+      Detail:
+        - Declare a specific type of observer.
+        - Subscribe to all necessary sensor topics.
+        - Run the main estimation loop using the methods of the observer class,
+          then publish the estimate.
   '''
   def __init__(self):
     rospy.init_node("observer")
@@ -17,7 +24,7 @@ class IdealObsNode:
     self.observer = IdealObs()
     self.sensor_readings = {}
 
-    # Sensor topics
+    # Declare all sensor topics
     self.pose_sub = Subscriber("/gazebo/model_states",
                                ModelStates,
                                self.on_model_states)
@@ -29,9 +36,21 @@ class IdealObsNode:
     self.run()
 
   def on_model_states(self, state):
-    ''' Gazebo model state callback
+    ''' Callback for sensor [Gazebo model state]
     '''
-    self.sensor_readings["true_state"] = state
+    idx = state.name.index("deedee")
+
+    quaternion = (state.pose[idx].orientation.x,
+                  state.pose[idx].orientation.y,
+                  state.pose[idx].orientation.z,
+                  state.pose[idx].orientation.w)
+    rpy = rpy_from_q(quaternion)
+
+    state = Pose2D(x=state.pose[idx].position.x,
+                   y=state.pose[idx].position.y,
+                   theta=rpy[2])
+
+    self.sensor_readings["true_state"] = (state, rospy.Time().now().to_sec())
 
   def run(self):
     ''' Main loop
@@ -40,8 +59,9 @@ class IdealObsNode:
     t_start = rospy.Time.now().to_sec()
 
     while not rospy.is_shutdown():
-      state = self.observer.estimate(self.sensor_readings)
-      if state:
+      if self.observer.check_readings(self.sensor_readings,
+                                      rospy.Time.now().to_sec()):
+        state = self.observer.estimate(self.sensor_readings)
         self.state_pub.publish(state)
 
       rate.sleep()
