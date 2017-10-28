@@ -10,6 +10,12 @@ from tf.transformations import euler_from_quaternion as rpy_from_q
 
 class IdealObsNode:
   ''' Ideal observer node
+
+      Detail:
+        - Declare a specific type of observer.
+        - Subscribe to all necessary sensor topics.
+        - Run the main estimation loop using the methods of the observer class,
+          then publish the estimate.
   '''
   def __init__(self):
     rospy.init_node("observer")
@@ -30,7 +36,7 @@ class IdealObsNode:
     self.run()
 
   def on_model_states(self, state):
-    ''' Gazebo model state callback
+    ''' Callback for sensor [Gazebo model state]
     '''
     idx = state.name.index("deedee")
 

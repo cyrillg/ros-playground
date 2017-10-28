@@ -1,7 +1,7 @@
 '''
 Definition of observer classes
 
-Observers gather the functions used to compute the current estimate of the
+Observers gather the methods used to compute the current estimate of the robot
 state
 
 author: Cyrill Guillemot
@@ -17,20 +17,34 @@ class IdealObs:
   ''' Definition of an ideal observer
 
       Detail:
-        This controller's estimate matches the actual state perfectly
-        Each sensor status is described by True (active) or False (inactive)
+        This controller's estimate matches the actual state perfectly.
+
+        It follows the following generic template:
+        - Each sensor status is described by True (active) or False (inactive).
+        - They all start inactive, and are activated on reception of the first
+          reading.
+        - A sensor can become inactive again if no reading is received for
+          longer than the timeout duration.
+        - Sensors can be declared required or not, so that estimation stops
+          or continues when one or more required sensors are inactive.
+        - A "check_readings(self, sensor_readings, t)" method is required, used
+          to verify the validity of the current batch of sensor readings.
+          Timeout checking is the minimum, but can extend to other checks.
+        - An "estimate(self, sensor_readings)" method is required, computing
+          the actual estimate.
   '''
   def __init__(self):
     self.state = None
-
     self.sensor_list = ["true_state"]
-
     self.sensor_config = {"true_state": (True, 2.)} # (required, timeout)
-
     self.active_flag = {"true_state": False}
 
   def check_readings(self, sensor_readings, t):
     ''' Check the validity of the sensor data
+
+        Detail:
+          Check for timeout in the given sensor readings. Return False if one
+          or more of the required sensors are inactive.
     '''
     # Check for sensor timeout
     for k in sensor_readings.keys():
@@ -52,8 +66,7 @@ class IdealObs:
     ''' Estimation of the robot state
 
         Detail:
-          The Gazebo model state is converted to retrain only the 2D pose
-          of the mobile robot
+          The robot pose is made equal to the Gazebo model's pose
     '''
     state = sensor_readings["true_state"][0]
 
