@@ -33,10 +33,15 @@ class IdealObs:
         - An "estimate(self, sensor_readings)" method is required, computing
           the actual estimate.
   '''
-  def __init__(self):
+  def __init__(self, robot_name, config):
+    # Configs
+    true_state_required = config["true_state"]["required"]
+    true_state_timeout = config["true_state"]["timeout"]
+
     self.state = None
     self.sensor_list = ["true_state"]
-    self.sensor_config = {"true_state": (True, 2.)} # (required, timeout)
+    self.sensor_config = {"true_state": (true_state_required,
+                                         true_state_timeout)}
     self.active_flag = {"true_state": False}
 
   def check_readings(self, sensor_readings, t):

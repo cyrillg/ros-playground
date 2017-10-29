@@ -16,11 +16,9 @@ class Controller:
     self.v = config["robot_speed"] #.5
     PID_gain = config["PID_gain"] #2.
 
-    # Constants
     self.hi_lvl_ctrl = LOS()
     self.lo_lvl_ctrl = PID(PID_gain)
 
-    # Variables
     self.path = None
     self.active = False
     self.wp_idx = 1

@@ -24,7 +24,7 @@ class ControllerNode:
     try:
       self.get_config()
       self.controller = Controller(self.robot_name,
-                                   self.control_config)
+                                   self.controller_config)
       self.controller.start(reference) # TODO: push that to a path callback
       self.initialized = True
     except KeyError as e:
@@ -46,7 +46,7 @@ class ControllerNode:
   def get_config(self):
     ns = rospy.get_namespace()
     self.robot_name = ns.strip("/")
-    self.control_config = rospy.get_param(ns+"controller")
+    self.controller_config = rospy.get_param(ns+"controller")
 
   def main(self):
     ''' Main loop

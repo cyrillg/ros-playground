@@ -2,3 +2,7 @@ deedee:
   controller:
     PID_gain: 2.
     robot_speed: .5
+  observer:
+    true_state:
+      required: True
+      timeout: 2.
