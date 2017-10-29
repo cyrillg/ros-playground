@@ -12,46 +12,64 @@ class ControllerNode:
                reference=[(-2.0, 0.0),
                           (-3.0, -1.0),
                           (0.0, 0.0)]):
+    # Initialize the node
     rospy.init_node("controller")
     rospy.sleep(0.5)
 
-    self.controller = Controller()
-    self.controller.start(reference)
-
+    # Variables
     self.p = None
+    self.initialized = False
 
-    self.pose_sub = Subscriber("state",
-                               Pose2D,
-                               self.on_pose)
+    # Retrieve the configs and initialize the controller
+    try:
+      self.get_config()
+      self.controller = Controller(self.robot_name,
+                                   self.controller_config)
+      self.controller.start(reference) # TODO: push that to a path callback
+      self.initialized = True
+    except KeyError as e:
+      rospy.logerr("Missing config: {}".format(e))
+
+    # Publisher/subscriber
+    Subscriber("state",
+               Pose2D,
+               self.on_pose)
     self.cmd_vel_pub = Publisher("twist_cmd",
                                  Twist,
                                  queue_size=10)
-
-    self.run()
 
   def on_pose(self, pose):
     ''' Store the incoming new pose
     '''
     self.p = pose
 
-  def run(self):
+  def get_config(self):
+    ns = rospy.get_namespace()
+    self.robot_name = ns.strip("/")
+    self.controller_config = rospy.get_param(ns+"controller")
+
+  def main(self):
     ''' Main loop
     '''
-    rate = rospy.Rate(10)
-    t_start = rospy.Time.now().to_sec()
+    if self.initialized:
+      rate = rospy.Rate(10)
+      t_start = rospy.Time.now().to_sec()
 
-    while not rospy.is_shutdown():
-      if self.controller.active:
-        t = rospy.Time.now().to_sec() - t_start
-        (v, w) = self.controller.generate_cmd(t, self.p)
+      while not rospy.is_shutdown():
+        if self.controller.active:
+          t = rospy.Time.now().to_sec() - t_start
+          (v, w) = self.controller.generate_cmd(t, self.p)
 
-        msg = Twist()
-        msg.linear.x = v
-        msg.angular.z = w
-        self.cmd_vel_pub.publish(msg)
+          msg = Twist()
+          msg.linear.x = v
+          msg.angular.z = w
+          self.cmd_vel_pub.publish(msg)
 
-        rate.sleep()
+          rate.sleep()
+    else:
+      rospy.loginfo("Missing configs, shutting down Controller node")
 
 if __name__=="__main__":
-  ControllerNode()
+  c = ControllerNode()
+  c.main()
 

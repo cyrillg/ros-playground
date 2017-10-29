@@ -10,13 +10,17 @@ class TestObserver(unittest.TestCase):
   ''' Unit tests for the Observer class
   '''
 
+  def setUp(self):
+    robot_name = "test_bot"
+    config = {"true_state": {"required": True,"timeout": 2.}}
+    self.obs = IdealObs(robot_name, config)
+
   def test_check_fails_if_no_reading(self):
     ''' Test that the observer gives no estimate if no reading ever came in
     '''
-    obs = IdealObs()
     sensor_readings = {}
     state = None
-    green_light = obs.check_readings(sensor_readings,0)
+    green_light = self.obs.check_readings(sensor_readings,0)
 
     self.assertIsNone(state,
                       "Expected green_light to be False, got %s" % green_light)

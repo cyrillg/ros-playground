@@ -10,6 +10,12 @@ class TestDiffDrive(unittest.TestCase):
   ''' Unit tests for the DiffDrive class
   '''
 
+  def setUp(self):
+    robot_name = "test_bot"
+    config = {"L": .6,
+              "r": .15}
+    self.dd = DiffDrive(robot_name, config)
+
   def test_transform(self):
     ''' Test the output of transform function
 
@@ -18,9 +24,8 @@ class TestDiffDrive(unittest.TestCase):
         - Spot turn
         - Straight forward
     '''
-    dd = DiffDrive(1.,1.)
     inputs = [(0.,0.), (0., 12412.421), (-23431.142, 0.)]
-    res = [dd.transform(i[0],i[1]) for i in inputs]
+    res = [self.dd.transform(i[0],i[1]) for i in inputs]
 
     self.assertEqual(res[0],
                      (0.,0.),

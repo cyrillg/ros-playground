@@ -80,7 +80,10 @@ class TestController(unittest.TestCase):
   '''
 
   def setUp(self):
-    self.c = Controller()
+    robot_name = "test_bot"
+    config = {"robot_speed": 5.,
+              "PID_gain": 2.}
+    self.c = Controller(robot_name, config)
 
     self.empty_path = []
     self.path1 = [[0.,1.],

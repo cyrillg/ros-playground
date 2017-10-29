@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
 class DiffDrive:
-  def __init__(self, L, r):
-    self.L = L
-    self.r = r
+  def __init__(self, robot_name, config):
+    self.L = config["L"]
+    self.r = config["r"]
+    print("\n\n\nL, r: {}, {}\n\n\n".format(self.L,self.r))
 
   def transform(self, v, w):
     ''' Transform linear and angular speed into wheel angular speeds

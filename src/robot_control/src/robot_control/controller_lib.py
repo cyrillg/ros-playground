@@ -11,19 +11,20 @@ class Controller:
         - reference: sequence of (x, y) waypoints. Must be specified as a
                      list of tuples.
   '''
-  def __init__(self):
+  def __init__(self, robot_name, config):
+    # Configs
+    self.v = config["robot_speed"] #.5
+    PID_gain = config["PID_gain"] #2.
+
+    self.hi_lvl_ctrl = LOS()
+    self.lo_lvl_ctrl = PID(PID_gain)
+
     self.path = None
     self.active = False
-
     self.wp_idx = 1
     self.current_wp = None
 
-    self.hi_lvl_ctrl = LOS()
-    self.lo_lvl_ctrl = PID(2.)
-
-    self.v = .5
-
-    print("\nController initialized, awaiting path")
+    print("\nController initialized for {}, awaiting path".format(robot_name))
 
   def start(self, path):
     if path:
