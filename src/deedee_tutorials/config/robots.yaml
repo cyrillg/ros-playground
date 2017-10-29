@@ -6,3 +6,6 @@ deedee:
     true_state:
       required: True
       timeout: 2.
+  movement_model:
+    L: 0.6
+    r: 0.15
