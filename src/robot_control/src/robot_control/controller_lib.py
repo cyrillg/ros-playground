@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 from robot_control.utils import *
-from copy import deepcopy
-from geometry_msgs.msg import Pose2D, Twist
+
+from tf.transformations import euler_from_quaternion as rpy_from_q
 
 class Controller:
   ''' Closed loop "waypoint path follower" controller definition
@@ -21,22 +21,26 @@ class Controller:
 
     self.path = None
     self.active = False
-    self.wp_idx = 1
+    self.wp_idx = None
     self.current_wp = None
 
     print("\nController initialized for {}, awaiting path".format(robot_name))
 
   def start(self, path):
+    header = path.header
+    path = path.poses
+
     if path:
       if not self.active:
-        print("Controller activated")
-        print("  Path composed of {} waypoints".format(len(path)))
-        print("\nInitial target: {}. {}".format(self.wp_idx-1,
-                                                self.current_wp))
         self.path = path
         self.wp_idx = 1
         self.current_wp = self.path[0]
         self.active = True
+
+        print("Controller activated")
+        print("  Path composed of {} waypoints".format(len(path)))
+        print("\nInitial target: {}. {}".format(self.wp_idx-1,
+                                                self.current_wp))
       else:
         print("Path already in progress. Discarding new path.")
     else:
@@ -47,8 +51,8 @@ class Controller:
     '''
     current_wp = self.current_wp
 
-    dist = sqrt(pow(p.x-current_wp[0],2)
-                +pow(p.y-current_wp[1],2))
+    dist = sqrt(pow(p.pose.position.x - current_wp.pose.position.x, 2)
+                +pow(p.pose.position.y - current_wp.pose.position.y, 2))
     if dist<0.2:
       if self.wp_idx<len(self.path):
         self.wp_idx += 1
@@ -57,7 +61,7 @@ class Controller:
                                           current_wp))
       else:
         self.current_wp = None
-        self.wp_idx = 1
+        self.wp_idx = None
         self.active = False
         print "\nFinal target reached\n"
 
@@ -87,9 +91,11 @@ class LOS:
   ''' Guidance law to generate the heading reference
   '''
   def compute_error(self, p, wp):
-    th_ref = arctan2(wp[1]-p.y,wp[0]-p.x)
+    th_ref = arctan2(wp.pose.position.y - p.pose.position.y,
+                     wp.pose.position.x - p.pose.position.x)
     if th_ref!=0:
-      th_err = normalize(th_ref-p.theta)
+      th = rpy_from_q(p.pose.orientation)[2]
+      th_err = normalize(th_ref-th)
     else:
       th_err = 0
 

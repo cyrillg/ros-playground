@@ -28,16 +28,16 @@ class ControllerNode:
 
     # Publisher/subscriber
     Subscriber("state",
-               Pose2D,
-               self.on_pose)
+               PoseStamped,
+               self.on_state)
     self.cmd_vel_pub = Publisher("twist_cmd",
                                  Twist,
                                  queue_size=10)
 
-  def on_pose(self, pose):
+  def on_state(self, state):
     ''' Store the incoming new pose
     '''
-    self.p = pose
+    self.p = state
 
   def on_path(self, path):
     ''' Store the incoming new pose

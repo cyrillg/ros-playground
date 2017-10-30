@@ -4,6 +4,9 @@ PKG='robot_control'
 
 import sys
 import unittest
+
+from nav_msgs.msg import Path
+from geometry_msgs.msg import PoseStamped
 from robot_control.controller_lib import *
 
 class TestPID(unittest.TestCase):
@@ -40,7 +43,9 @@ class TestLOS(unittest.TestCase):
 
   def setUp(self):
     self.los = LOS()
-    self.p = Pose2D(1.0, 0.0, 3*pi/4)
+
+    self.p = PoseStamped()
+    self.p.pose = pose2d_to_pose(Pose2D(1., 0., 3.*pi/4.))
 
   def test_LOS_aligned_target_front(self):
     ''' Test the output of the LOS algo
@@ -48,7 +53,8 @@ class TestLOS(unittest.TestCase):
         Expect the error output to be equal to 0, since
         target is aligned.
     '''
-    wp = [0.0, 1.0]
+    wp = PoseStamped()
+    wp.pose = pose2d_to_pose(Pose2D(0., 1., 0.))
 
     err = self.los.compute_error(self.p, wp)
     self.assertEqual(err, 0, "Expected 0, got: %f" % err)
@@ -59,7 +65,8 @@ class TestLOS(unittest.TestCase):
         It expects the error output to be equal to pi, since
         the target is exactly behind.
     '''
-    wp = [2.0, -1.0]
+    wp = PoseStamped()
+    wp.pose = pose2d_to_pose(Pose2D(2., -1., 0.))
 
     err = self.los.compute_error(self.p, wp)
     self.assertEqual(abs(err), pi, "Expected pi, got: %f" % abs(err))
@@ -70,7 +77,10 @@ class TestLOS(unittest.TestCase):
         It expects the error output to be equal to the 0, as special case
         if robot and target are at the same location.
     '''
-    wp = [self.p.x, self.p.y]
+    wp = PoseStamped()
+    wp.pose = pose2d_to_pose(Pose2D(self.p.pose.position.x,
+                                    self.p.pose.position.y,
+                                    0.))
 
     err = self.los.compute_error(self.p, wp)
     self.assertEqual(err, 0, "Expected 0, got: %f" % err)
@@ -85,13 +95,15 @@ class TestController(unittest.TestCase):
               "PID_gain": 2.}
     self.c = Controller(robot_name, config)
 
-    self.empty_path = []
-    self.path1 = [[0.,1.],
-                  [1.,0.],
-                  [2.,3.]]
-    self.path2 = [[1.,1.],
-                  [1.,0.],
-                  [2.,3.]]
+    self.empty_path = Path()
+    self.path1 = Path()
+    self.path1.poses = [PoseStamped(pose=pose2d_to_pose(Pose2D(0.,1.,0.))),
+                        PoseStamped(pose=pose2d_to_pose(Pose2D(1.,0.,0.))),
+                        PoseStamped(pose=pose2d_to_pose(Pose2D(2.,3.,0.)))]
+    self.path2 = Path()
+    self.path2.poses = [PoseStamped(pose=pose2d_to_pose(Pose2D(1.,1.,0.))),
+                        PoseStamped(pose=pose2d_to_pose(Pose2D(1.,0.,0.))),
+                        PoseStamped(pose=pose2d_to_pose(Pose2D(2.,3.,0.)))]
 
   def test_controller_activate_success(self):
     ''' Test the activation of the controller on valid new path
@@ -102,7 +114,7 @@ class TestController(unittest.TestCase):
     self.assertTrue(self.c.active,
                     "Expected active Controller after start")
     self.assertEqual(self.c.current_wp,
-                     self.path1[0],
+                     self.path1.poses[0],
                      "Expected current waypoint to be first waypoint")
     self.assertEqual(self.c.wp_idx,
                      1,
@@ -122,14 +134,14 @@ class TestController(unittest.TestCase):
     self.c.start(self.path2)
     self.assertTrue(self.c.active,
                     "Expected active Controller after start")
-    self.assertEqual(self.c.path, self.path1,
+    self.assertEqual(self.c.path, self.path1.poses,
                      "Expected first path to be active. Got second one.")
 
   def test_controller_keep_waypoint_if_too_far(self):
     ''' Test that controller does not switch to next point if too far from it
     '''
     self.c.start(self.path1)
-    p = Pose2D(0., 0.79, 0.)
+    p = PoseStamped(pose=pose2d_to_pose(Pose2D(0., 0.79, 0.)))
 
     original_wp = self.c.current_wp
     self.c.supervise(0., p)
@@ -141,9 +153,10 @@ class TestController(unittest.TestCase):
     ''' Test that controller switches to next point if close enough from it
     '''
     self.c.start(self.path1)
-    p = Pose2D(0., 0.81, 0.)
+    p = PoseStamped()
+    p.pose = pose2d_to_pose(Pose2D(0., 0.81, 0.))
 
-    expected_wp = self.path1[self.c.wp_idx]
+    expected_wp = self.path1.poses[self.c.wp_idx]
     self.c.supervise(0., p)
     self.assertEqual(self.c.current_wp,
                      expected_wp,
@@ -154,17 +167,15 @@ class TestController(unittest.TestCase):
     '''
     self.c.start(self.path1)
 
-    poses = [Pose2D(p[0], p[1], 0.) for p in self.path1]
+    poses = self.path1.poses
 
     self.c.supervise(0., poses[0])
     self.c.supervise(0., poses[1])
     self.c.supervise(0., poses[2])
-    self.assertEqual(self.c.current_wp,
-                     None,
+    self.assertIsNone(self.c.current_wp,
                      "Expected current_wp=None, got: %s" % self.c.current_wp)
-    self.assertEqual(self.c.wp_idx,
-                     1,
-                     "Expected wp_idx=1, got: %s" % self.c.wp_idx)
+    self.assertIsNone(self.c.wp_idx,
+                     "Expected wp_idx=None, got: %s" % self.c.wp_idx)
     self.assertFalse(self.c.active,
                      "Expected inactive Controller after final target reached")
 
@@ -180,7 +191,8 @@ class TestController(unittest.TestCase):
   def test_controller_standby_if_not_active(self):
     ''' Test that controller generates zero speeds if not active
     '''
-    p = Pose2D(0., 0.81, 0.)
+    p = PoseStamped()
+    p.pose = pose2d_to_pose(Pose2D(0., 0.81, 0.))
     cmd = self.c.generate_cmd(0., p)
     self.assertEqual(cmd,
                      (0., 0.),
@@ -191,7 +203,7 @@ class TestController(unittest.TestCase):
     '''
     self.c.start(self.path1)
 
-    poses = [Pose2D(p[0], p[1], 0.) for p in self.path1]
+    poses = self.path1.poses
 
     self.c.supervise(0., poses[0])
     self.c.supervise(0., poses[1])
@@ -207,7 +219,7 @@ class TestController(unittest.TestCase):
     '''
     self.c.start(self.path1)
 
-    poses = [Pose2D(p[0], p[1], 0.) for p in self.path1]
+    poses = self.path1.poses
 
     self.c.supervise(0., poses[0])
 

@@ -4,7 +4,7 @@ import rospy
 from robot_control.observer_lib import *
 from rospy import Subscriber, Publisher
 
-from geometry_msgs.msg import Pose2D
+from geometry_msgs.msg import PoseStamped
 from gazebo_msgs.msg import ModelStates
 from tf.transformations import euler_from_quaternion as rpy_from_q
 
@@ -25,6 +25,7 @@ class IdealObsNode:
     # Variables
     self.sensor_readings = {}
     self.initialized = False
+    self.model_state_seq = 0
 
     # Retrieve the configs and initialize the observer
     try:
@@ -41,25 +42,21 @@ class IdealObsNode:
                self.on_model_states)
 
     self.state_pub = Publisher("state",
-                               Pose2D,
+                               PoseStamped,
                                queue_size=10)
 
-  def on_model_states(self, state):
+  def on_model_states(self, model_state):
     ''' Callback for sensor [Gazebo model state]
     '''
-    idx = state.name.index("deedee")
+    idx = model_state.name.index("deedee")
 
-    quaternion = (state.pose[idx].orientation.x,
-                  state.pose[idx].orientation.y,
-                  state.pose[idx].orientation.z,
-                  state.pose[idx].orientation.w)
-    rpy = rpy_from_q(quaternion)
+    state = PoseStamped()
+    state.pose = model_state.pose
+    state.header.seq = self.model_state_seq
+    state.header.stamp = rospy.Time().now().to_sec()
+    state.header.frame_id = "map"
 
-    state = Pose2D(x=state.pose[idx].position.x,
-                   y=state.pose[idx].position.y,
-                   theta=rpy[2])
-
-    self.sensor_readings["true_state"] = (state, rospy.Time().now().to_sec())
+    self.sensor_readings["true_state"] = (state, state.header.stamp.to_sec())
 
   def get_config(self):
     ns = rospy.get_namespace()
