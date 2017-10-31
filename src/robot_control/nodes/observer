@@ -51,9 +51,9 @@ class IdealObsNode:
     idx = model_state.name.index("deedee")
 
     state = PoseStamped()
-    state.pose = model_state.pose
+    state.pose = model_state.pose[idx]
     state.header.seq = self.model_state_seq
-    state.header.stamp = rospy.Time().now().to_sec()
+    state.header.stamp = rospy.Time().now()
     state.header.frame_id = "map"
 
     self.sensor_readings["true_state"] = (state, state.header.stamp.to_sec())

@@ -2,6 +2,7 @@
 
 from robot_control.utils import *
 
+import rospy
 from tf.transformations import euler_from_quaternion as rpy_from_q
 
 class Controller:
@@ -24,7 +25,7 @@ class Controller:
     self.wp_idx = None
     self.current_wp = None
 
-    print("\nController initialized for {}, awaiting path".format(robot_name))
+    rospy.loginfo("\nController initialized for {}, awaiting path".format(robot_name))
 
   def start(self, path):
     header = path.header
@@ -37,14 +38,14 @@ class Controller:
         self.current_wp = self.path[0]
         self.active = True
 
-        print("Controller activated")
-        print("  Path composed of {} waypoints".format(len(path)))
-        print("\nInitial target: {}. {}".format(self.wp_idx-1,
+        rospy.loginfo("Controller activated")
+        rospy.loginfo("  Path composed of {} waypoints".format(len(path)))
+        rospy.loginfo("\nInitial target: {}. {}".format(self.wp_idx-1,
                                                 self.current_wp))
       else:
-        print("Path already in progress. Discarding new path.")
+        rospy.loginfo("Path already in progress. Discarding new path.")
     else:
-      print("Discarding empty path.")
+      rospy.loginfo("Discarding empty path.")
 
   def supervise(self, t, p):
     ''' Supervisor handling waypoint switching

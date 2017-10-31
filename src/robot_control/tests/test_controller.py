@@ -5,6 +5,7 @@ PKG='robot_control'
 import sys
 import unittest
 
+from std_msgs.msg import Header
 from nav_msgs.msg import Path
 from geometry_msgs.msg import PoseStamped
 from robot_control.controller_lib import *
@@ -97,13 +98,21 @@ class TestController(unittest.TestCase):
 
     self.empty_path = Path()
     self.path1 = Path()
-    self.path1.poses = [PoseStamped(pose=pose2d_to_pose(Pose2D(0.,1.,0.))),
-                        PoseStamped(pose=pose2d_to_pose(Pose2D(1.,0.,0.))),
-                        PoseStamped(pose=pose2d_to_pose(Pose2D(2.,3.,0.)))]
+    self.path1.header.seq = 1
+    self.path1.poses = [PoseStamped(pose=pose2d_to_pose(Pose2D(0.,1.,0.)),
+                                    header=Header(seq=1)),
+                        PoseStamped(pose=pose2d_to_pose(Pose2D(1.,0.,0.)),
+                                    header=Header(seq=2)),
+                        PoseStamped(pose=pose2d_to_pose(Pose2D(2.,3.,0.)),
+                                    header=Header(seq=3))]
     self.path2 = Path()
-    self.path2.poses = [PoseStamped(pose=pose2d_to_pose(Pose2D(1.,1.,0.))),
-                        PoseStamped(pose=pose2d_to_pose(Pose2D(1.,0.,0.))),
-                        PoseStamped(pose=pose2d_to_pose(Pose2D(2.,3.,0.)))]
+    self.path2.header.seq = 2
+    self.path2.poses = [PoseStamped(pose=pose2d_to_pose(Pose2D(1.,1.,0.)),
+                                    header=Header(seq=1)),
+                        PoseStamped(pose=pose2d_to_pose(Pose2D(1.,0.,0.)),
+                                    header=Header(seq=2)),
+                        PoseStamped(pose=pose2d_to_pose(Pose2D(2.,3.,0.)),
+                                    header=Header(seq=3))]
 
   def test_controller_activate_success(self):
     ''' Test the activation of the controller on valid new path
@@ -113,8 +122,8 @@ class TestController(unittest.TestCase):
     self.c.start(self.path1)
     self.assertTrue(self.c.active,
                     "Expected active Controller after start")
-    self.assertEqual(self.c.current_wp,
-                     self.path1.poses[0],
+    self.assertEqual(self.c.current_wp.header.seq,
+                     1,
                      "Expected current waypoint to be first waypoint")
     self.assertEqual(self.c.wp_idx,
                      1,
@@ -143,23 +152,21 @@ class TestController(unittest.TestCase):
     self.c.start(self.path1)
     p = PoseStamped(pose=pose2d_to_pose(Pose2D(0., 0.79, 0.)))
 
-    original_wp = self.c.current_wp
+    original_wp_idx = self.c.current_wp.header.seq
     self.c.supervise(0., p)
-    self.assertEqual(self.c.current_wp,
-                     original_wp,
+    self.assertEqual(self.c.current_wp.header.seq,
+                     original_wp_idx,
                      "Expected waypoint to stay the same")
 
   def test_controller_next_waypoint_if_close_enough(self):
     ''' Test that controller switches to next point if close enough from it
     '''
     self.c.start(self.path1)
-    p = PoseStamped()
-    p.pose = pose2d_to_pose(Pose2D(0., 0.81, 0.))
+    p = PoseStamped(pose=pose2d_to_pose(Pose2D(0., 0.81, 0.)))
 
-    expected_wp = self.path1.poses[self.c.wp_idx]
     self.c.supervise(0., p)
-    self.assertEqual(self.c.current_wp,
-                     expected_wp,
+    self.assertEqual(self.c.current_wp.header.seq,
+                     2,
                      "Expected waypoint to change to next one")
 
   def test_controller_reset_on_end_path(self):
@@ -184,7 +191,7 @@ class TestController(unittest.TestCase):
     '''
     self.c.start(self.path1)
     cmd = self.c.generate_cmd(0., None)
-    self.assertEqual(cmd,
+    self.assertTupleEqual(cmd,
                      (0., 0.),
                      "Expected speed=(0,0), got: %s" % str(cmd))
 
@@ -194,7 +201,7 @@ class TestController(unittest.TestCase):
     p = PoseStamped()
     p.pose = pose2d_to_pose(Pose2D(0., 0.81, 0.))
     cmd = self.c.generate_cmd(0., p)
-    self.assertEqual(cmd,
+    self.assertTupleEqual(cmd,
                      (0., 0.),
                      "Expected speed=(0,0), got: %s" % str(cmd))
 
@@ -210,7 +217,7 @@ class TestController(unittest.TestCase):
     self.c.supervise(0., poses[2])
 
     cmd = self.c.generate_cmd(0., poses[2])
-    self.assertEqual(cmd,
+    self.assertTupleEqual(cmd,
                      (0., 0.),
                      "Expected speed=(0,0), got: %s" % str(cmd))
 
