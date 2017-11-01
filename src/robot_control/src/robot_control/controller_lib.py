@@ -36,12 +36,12 @@ class Controller:
         self.path = path
         self.wp_idx = 1
         self.current_wp = self.path[0]
-        self.active = True
 
         rospy.loginfo("Controller activated")
         rospy.loginfo("  Path composed of {} waypoints".format(len(path)))
         rospy.loginfo("\nInitial target: {}. {}".format(self.wp_idx-1,
                                                 self.current_wp))
+        self.active = True
       else:
         rospy.loginfo("Path already in progress. Discarding new path.")
     else:
@@ -58,13 +58,13 @@ class Controller:
       if self.wp_idx<len(self.path):
         self.wp_idx += 1
         self.current_wp = self.path[self.wp_idx-1]
-        print("New target: {}. {}".format(self.wp_idx-1,
-                                          current_wp))
+        rospy.loginfo("New target: {}. {}".format(self.wp_idx-1,
+                                                  current_wp))
       else:
+        self.active = False
         self.current_wp = None
         self.wp_idx = None
-        self.active = False
-        print "\nFinal target reached\n"
+        rospy.loginfo("\nFinal target reached\n")
 
   def generate_cmd(self, t, p):
     ''' Generate the current wheel angular speed inputs
@@ -95,7 +95,8 @@ class LOS:
     th_ref = arctan2(wp.pose.position.y - p.pose.position.y,
                      wp.pose.position.x - p.pose.position.x)
     if th_ref!=0:
-      th = rpy_from_q(p.pose.orientation)[2]
+      q = p.pose.orientation
+      th = rpy_from_q((q.x, q.y, q.z, q.w))[2]
       th_err = normalize(th_ref-th)
     else:
       th_err = 0
