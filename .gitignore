@@ -53,3 +53,6 @@ misc/setup.bash
 
 # Vim
 *.swp
+
+# Folder to create and store files that need to stay local (e.g. for dev)
+misc/ignored/*
