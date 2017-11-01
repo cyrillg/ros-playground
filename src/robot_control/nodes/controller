@@ -2,16 +2,14 @@
 
 import rospy
 from rospy import Subscriber, Publisher
-from geometry_msgs.msg import Pose2D, Twist
+from geometry_msgs.msg import PoseStamped, Twist
+from nav_msgs.msg import Path
 from robot_control.controller_lib import *
 
 class ControllerNode:
   ''' Controller node
   '''
-  def __init__(self,
-               reference=[(-2.0, 0.0),
-                          (-3.0, -1.0),
-                          (0.0, 0.0)]):
+  def __init__(self):
     # Initialize the node
     rospy.init_node("controller")
     rospy.sleep(0.5)
@@ -25,23 +23,31 @@ class ControllerNode:
       self.get_config()
       self.controller = Controller(self.robot_name,
                                    self.controller_config)
-      self.controller.start(reference) # TODO: push that to a path callback
       self.initialized = True
     except KeyError as e:
       rospy.logerr("Missing config: {}".format(e))
 
     # Publisher/subscriber
+    Subscriber("path",
+               Path,
+               self.on_path)
     Subscriber("state",
-               Pose2D,
-               self.on_pose)
+               PoseStamped,
+               self.on_state)
     self.cmd_vel_pub = Publisher("twist_cmd",
                                  Twist,
                                  queue_size=10)
 
-  def on_pose(self, pose):
+  def on_state(self, state):
     ''' Store the incoming new pose
     '''
-    self.p = pose
+    self.p = state
+
+  def on_path(self, path):
+    ''' Store the incoming new pose
+    '''
+    rospy.loginfo("Receiving new path")
+    self.controller.start(path)
 
   def get_config(self):
     ns = rospy.get_namespace()

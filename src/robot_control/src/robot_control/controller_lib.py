@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
 from robot_control.utils import *
-from copy import deepcopy
-from geometry_msgs.msg import Pose2D, Twist
+
+import rospy
+from tf.transformations import euler_from_quaternion as rpy_from_q
 
 class Controller:
   ''' Closed loop "waypoint path follower" controller definition
@@ -21,45 +22,49 @@ class Controller:
 
     self.path = None
     self.active = False
-    self.wp_idx = 1
+    self.wp_idx = None
     self.current_wp = None
 
-    print("\nController initialized for {}, awaiting path".format(robot_name))
+    rospy.loginfo("\nController initialized for {}, awaiting path".format(robot_name))
 
   def start(self, path):
+    header = path.header
+    path = path.poses
+
     if path:
       if not self.active:
-        print("Controller activated")
-        print("  Path composed of {} waypoints".format(len(path)))
-        print("\nInitial target: {}. {}".format(self.wp_idx-1,
-                                                self.current_wp))
         self.path = path
         self.wp_idx = 1
         self.current_wp = self.path[0]
+
+        rospy.loginfo("Controller activated")
+        rospy.loginfo("  Path composed of {} waypoints".format(len(path)))
+        rospy.loginfo("\nInitial target: {}. {}".format(self.wp_idx-1,
+                                                self.current_wp))
         self.active = True
       else:
-        print("Path already in progress. Discarding new path.")
+        rospy.loginfo("Path already in progress. Discarding new path.")
     else:
-      print("Discarding empty path.")
+      rospy.loginfo("Discarding empty path.")
 
   def supervise(self, t, p):
     ''' Supervisor handling waypoint switching
     '''
     current_wp = self.current_wp
 
-    dist = sqrt(pow(p.x-current_wp[0],2)
-                +pow(p.y-current_wp[1],2))
+    dist = sqrt(pow(p.pose.position.x - current_wp.pose.position.x, 2)
+                +pow(p.pose.position.y - current_wp.pose.position.y, 2))
     if dist<0.2:
       if self.wp_idx<len(self.path):
         self.wp_idx += 1
         self.current_wp = self.path[self.wp_idx-1]
-        print("New target: {}. {}".format(self.wp_idx-1,
-                                          current_wp))
+        rospy.loginfo("New target: {}. {}".format(self.wp_idx-1,
+                                                  current_wp))
       else:
-        self.current_wp = None
-        self.wp_idx = 1
         self.active = False
-        print "\nFinal target reached\n"
+        self.current_wp = None
+        self.wp_idx = None
+        rospy.loginfo("\nFinal target reached\n")
 
   def generate_cmd(self, t, p):
     ''' Generate the current wheel angular speed inputs
@@ -87,9 +92,12 @@ class LOS:
   ''' Guidance law to generate the heading reference
   '''
   def compute_error(self, p, wp):
-    th_ref = arctan2(wp[1]-p.y,wp[0]-p.x)
+    th_ref = arctan2(wp.pose.position.y - p.pose.position.y,
+                     wp.pose.position.x - p.pose.position.x)
     if th_ref!=0:
-      th_err = normalize(th_ref-p.theta)
+      q = p.pose.orientation
+      th = rpy_from_q((q.x, q.y, q.z, q.w))[2]
+      th_err = normalize(th_ref-th)
     else:
       th_err = 0
 
