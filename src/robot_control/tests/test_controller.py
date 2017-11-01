@@ -54,8 +54,7 @@ class TestLOS(unittest.TestCase):
         Expect the error output to be equal to 0, since
         target is aligned.
     '''
-    wp = PoseStamped()
-    wp.pose = pose2d_to_pose(Pose2D(0., 1., 0.))
+    wp = PoseStamped(pose=pose2d_to_pose(Pose2D(0., 1., 0.)))
 
     err = self.los.compute_error(self.p, wp)
     self.assertEqual(err, 0, "Expected 0, got: %f" % err)
@@ -66,8 +65,7 @@ class TestLOS(unittest.TestCase):
         It expects the error output to be equal to pi, since
         the target is exactly behind.
     '''
-    wp = PoseStamped()
-    wp.pose = pose2d_to_pose(Pose2D(2., -1., 0.))
+    wp = PoseStamped(pose=pose2d_to_pose(Pose2D(2., -1., 0.)))
 
     err = self.los.compute_error(self.p, wp)
     self.assertEqual(abs(err), pi, "Expected pi, got: %f" % abs(err))
@@ -78,10 +76,9 @@ class TestLOS(unittest.TestCase):
         It expects the error output to be equal to the 0, as special case
         if robot and target are at the same location.
     '''
-    wp = PoseStamped()
-    wp.pose = pose2d_to_pose(Pose2D(self.p.pose.position.x,
-                                    self.p.pose.position.y,
-                                    0.))
+    wp = PoseStamped(pose=pose2d_to_pose(Pose2D(self.p.pose.position.x,
+                                         self.p.pose.position.y,
+                                         0.)))
 
     err = self.los.compute_error(self.p, wp)
     self.assertEqual(err, 0, "Expected 0, got: %f" % err)
