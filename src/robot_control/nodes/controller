@@ -12,7 +12,7 @@ class ControllerNode:
   def __init__(self):
     # Initialize the node
     rospy.init_node("controller")
-    rospy.sleep(0.5)
+    rospy.sleep(.5)
 
     # Variables
     self.p = None
