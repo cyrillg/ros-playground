@@ -170,6 +170,7 @@ catkin_install_python(PROGRAMS
   nodes/movement_model
   nodes/controller
   nodes/observer
+  nodes/send_path
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
