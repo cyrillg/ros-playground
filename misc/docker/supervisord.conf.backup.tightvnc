@@ -1,0 +1,10 @@
+[supervisord]
+nodaemon=true
+
+[program:sshd]
+user=root
+command=/usr/sbin/sshd -D
+
+[program:vncserver]
+user=root
+command=/usr/bin/vncserver :1 -geometry 1280x800 -depth 24
