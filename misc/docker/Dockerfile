@@ -52,20 +52,25 @@ RUN chsh -s /bin/bash $USERNAME
 #RUN apt-get install -y lightdm
 
 # Add files
+ENV DISPLAY :1
 WORKDIR $HOME
 RUN mkdir /root/.vnc
 RUN mkdir ./ros-playground
+RUN mkdir ./gazebo
+RUN mkdir -p ./.config/nautilus
 RUN mkdir -p /var/log/supervisor
 RUN rm .bashrc
 RUN curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh > .git-prompt.bash
 COPY .bashrc .
 COPY .tmux.conf .
 COPY .vimrc .
+COPY autumn.jpg .
 #ADD image /
 #COPY xstartup /root/.vnc/xstartup
 #COPY passwd /root/.vnc/passwd
 #COPY x11vnc.pass /root/x11vnc.pass
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY .gazebo ./.gazebo
 
 RUN chown -R serial:serial .bashrc \
                            .tmux.conf \
@@ -75,18 +80,23 @@ RUN chown -R serial:serial .bashrc \
 #RUN chmod 600 /root/.vnc/passwd
 #RUN chmod 400 /root/x11vnc.pass
 
+# TEMPORARY - SHOULD BE HANDLED BY ROSDEP
+RUN apt-get install -y\
+        ros-kinetic-ros-control \
+        ros-kinetic-ros-controllers \
+        ros-kinetic-gazebo-ros-control
+
 # Install ROS dependencies
 WORKDIR $HOME/ros-playground
 USER serial
 RUN echo "export WS=~/" >> $HOME/.bashrc
 RUN rosdep update
-#RUN rosdep install --rosdistro kinetic --from-paths src --ignore-src -r -y
+RUN ls -lFa
 #RUN /bin/bash --login -c "catkin_make && catkin_make install"
 
 # Setup VNC
 ENV USER root
-ENV DISPLAY :1
-EXPOSE 5900 5901 6080 6081
+EXPOSE 5900
 
 # Set XDRP to use TightVNC port
 USER root
