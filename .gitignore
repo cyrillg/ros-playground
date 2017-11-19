@@ -48,14 +48,11 @@ qtcreator-*
 # Catkin custom files
 CATKIN_IGNORE
 
-# Setup script
-misc/setup.bash
-
 # Vim
 *.swp
 
 # Folder to create and store files that need to stay local (e.g. for dev)
-misc/ignored/*
+ros_ws/misc/ignored/*
 
 # Temporary files
 tmp/*
