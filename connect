@@ -1,0 +1,4 @@
+#! /usr/bin/env bash
+
+ssh -p 12321 serial@172.17.0.1
+

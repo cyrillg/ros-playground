@@ -1,0 +1,10 @@
+#! /usr/bin/env bash
+
+if [ -f "./tmp/current.id" ]; then
+  docker kill $(docker ps -aqf "id=$(cat ./tmp/current.id)")
+  rm -rf tmp/current.id
+else
+  echo "No docker running."
+fi
+
+
