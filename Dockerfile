@@ -70,7 +70,8 @@ RUN chown -R serial:serial .bashrc \
                            .gazebo \
                            ros_ws
 
-# TEMPORARY - SHOULD ULTIMATELY BE HANDLED BY ROSDEP
+# WHEN THE SETUP IS STABLE, THIS WILL NEED TO BE OUTSIDE OF THE IMAGE,
+# SINCE IT BELONGS TO THE APPLICATION
 RUN apt-get install -y\
         ros-kinetic-ros-control \
         ros-kinetic-ros-controllers \
@@ -81,6 +82,7 @@ WORKDIR $HOME/ros_ws
 USER serial
 RUN echo "export WS=~/" >> $HOME/.bashrc
 RUN rosdep update
+#RUN rosdep install --from-paths src --ignore-src -r -y
 
 EXPOSE 22 5900
 USER root

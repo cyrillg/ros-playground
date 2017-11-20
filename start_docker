@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-HOST_WS=
+HOST_WS=/home/cyrill/ros-playground/ros_ws
 ROS_WS=/home/serial/ros_ws
 
 docker run -d \
