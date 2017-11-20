@@ -55,4 +55,4 @@ CATKIN_IGNORE
 ros_ws/misc/ignored/*
 
 # Temporary files
-tmp/*
+tmp/*.id

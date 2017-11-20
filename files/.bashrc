@@ -151,5 +151,5 @@ export LC_ALL LANG DISPLAY QT_X11_NO_MITSHM
 
 source ~/.git-prompt.bash
 source /opt/ros/kinetic/setup.bash
-source ~/ros-playground/devel/setup.bash
+source ~/ros_ws/devel/setup.bash
 
