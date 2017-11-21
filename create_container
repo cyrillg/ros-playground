@@ -3,8 +3,9 @@
 HOST_WS=/home/cyrill/ros-playground/ros_ws
 ROS_WS=/home/serial/ros_ws
 
-docker run -d \
+docker create \
         -p 5900:5900 \
         -p 12321:22 \
         --volume=$HOST_WS:$ROS_WS:rw \
-        sr-dev > tmp/current.id
+        --name sr-dev \
+        sr-dev

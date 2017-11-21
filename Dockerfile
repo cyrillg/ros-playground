@@ -56,6 +56,7 @@ RUN mkdir -p ./.config/nautilus
 RUN mkdir -p /var/log/supervisor
 RUN rm .bashrc
 RUN curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh > .git-prompt.bash
+RUN touch .bash_history
 COPY files/.bashrc .
 COPY files/.tmux.conf .
 COPY files/.vimrc .
@@ -64,25 +65,32 @@ COPY files/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY files/.gazebo ./.gazebo
 
 # Set user and group ownership
-RUN chown -R serial:serial .bashrc \
-                           .tmux.conf \
-                           .vimrc \
-                           .gazebo \
-                           ros_ws
+RUN chown -R serial:serial .
+#.bashrc \
+#                           .bash_history \
+#                           .tmux.conf \
+#                           .git-prompt.bash \
+#                           .vimrc \
+#                           .gazebo \
+#                           autumn.jpg \
+#                           .config \
+#                           ros_ws
 
 # WHEN THE SETUP IS STABLE, THIS WILL NEED TO BE OUTSIDE OF THE IMAGE,
 # SINCE IT BELONGS TO THE APPLICATION
-RUN apt-get install -y\
-        ros-kinetic-ros-control \
-        ros-kinetic-ros-controllers \
-        ros-kinetic-gazebo-ros-control
+#RUN apt-get install -y\
+#        ros-kinetic-ros-control \
+#        ros-kinetic-ros-controllers \
+#        ros-kinetic-teleop-twist-keyboard \
+#        ros-kinetic-gazebo-ros-control
 
 # Install ROS dependencies
 WORKDIR $HOME/ros_ws
 USER serial
 RUN echo "export WS=~/" >> $HOME/.bashrc
-RUN rosdep update
+#RUN rosdep update
 #RUN rosdep install --from-paths src --ignore-src -r -y
+ENV TERM xterm
 
 EXPOSE 22 5900
 USER root
