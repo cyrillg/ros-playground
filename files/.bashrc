@@ -142,7 +142,8 @@ LC_ALL=C
 LANG=C
 DISPLAY=:1
 QT_X11_NO_MITSHM=1
-export LC_ALL LANG DISPLAY QT_X11_NO_MITSHM
+ROS_WS_PATH=~/ros_ws
+export LC_ALL LANG DISPLAY QT_X11_NO_MITSHM ROS_WS_PATH
 
 source ~/.git-prompt.bash
 source /opt/ros/kinetic/setup.bash

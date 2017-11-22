@@ -1,4 +1,4 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 
 docker exec -it -u serial sr-dev "/bin/bash"
 

@@ -1,7 +1,0 @@
-#! /usr/bin/env bash
-
-HOST_WS=/home/cyrill/ros-playground/ros_ws
-ROS_WS=/home/serial/ros_ws
-
-docker start \
-        sr-dev

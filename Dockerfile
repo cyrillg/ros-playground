@@ -1,15 +1,17 @@
 FROM ubuntu:16.04
 MAINTAINER Cyrill Guillemot "https://github.com/cyrillg"
 
-# Install ROS
-RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu xenial main" > /etc/apt/sources.list.d/ros-latest.list'
-RUN apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
-RUN apt-get update && apt-get install -y ros-kinetic-desktop-full
-RUN rosdep init
-
-# Install other utilities
 ENV DEBIAN_FRONTEND noninteractive
 
+# Install ROS
+RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu xenial main" > \
+                /etc/apt/sources.list.d/ros-latest.list' && \
+    apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 \
+                --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116 && \
+    apt-get update && apt-get install -y ros-kinetic-desktop-full && \
+    rosdep init
+
+# Install other utilities
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ubuntu-desktop && \
     apt-get install -y gnome-panel \
@@ -19,7 +21,6 @@ RUN apt-get update && \
       gnome-terminal \
       x11vnc \
       xvfb \
-      openssh-server \
       vim \
       tmux \
       git \
@@ -32,49 +33,36 @@ RUN apt-get update && \
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     locale-gen
 
-# Configure ssh
-RUN mkdir /var/run/sshd
-RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
-
 # Environment variables
-ENV DISPLAY :1
-ENV USER serial
+ENV DISPLAY=:1 USER=serial TERM=xterm
 ENV HOME /home/$USER
 
 # Configure user
 RUN groupadd $USER && \
     useradd --create-home --no-log-init -g $USER $USER && \
-    usermod -aG sudo $USER
-RUN echo "$USER:$USER" | chpasswd
-RUN chsh -s /bin/bash $USER
+    usermod -aG sudo $USER && \
+    echo "$USER:$USER" | chpasswd && \
+    chsh -s /bin/bash $USER
 
 # Add files
 WORKDIR $HOME
-RUN mkdir ros_ws
-RUN mkdir ./.gazebo
-RUN mkdir -p ./.config/nautilus
-RUN mkdir -p /var/log/supervisor
-RUN rm .bashrc
-RUN curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh > .git-prompt.bash
-RUN touch .bash_history
-COPY files/.bashrc .
-COPY files/.tmux.conf .
-COPY files/.vimrc .
-COPY files/autumn.jpg .
+RUN mkdir ros_ws && \
+    mkdir .gazebo && \
+    mkdir -p ./.config/nautilus && \
+    mkdir -p /var/log/supervisor && \
+    curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh > .git-prompt.bash && \
+    touch .bash_history
+COPY ["files/.bashrc", \
+      "files/.tmux.conf", \
+      "files/.vimrc", \
+      "files/autumn.jpg", \
+      "files/init_ros", "./"]
+COPY files/.gazebo .gazebo
 COPY files/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY files/.gazebo ./.gazebo
 
 # Set user and group ownership
-RUN chown -R serial:serial .
-#.bashrc \
-#                           .bash_history \
-#                           .tmux.conf \
-#                           .git-prompt.bash \
-#                           .vimrc \
-#                           .gazebo \
-#                           autumn.jpg \
-#                           .config \
-#                           ros_ws
+RUN chown -R serial:serial . && \
+    chmod +x init_ros
 
 # WHEN THE SETUP IS STABLE, THIS WILL NEED TO BE OUTSIDE OF THE IMAGE,
 # SINCE IT BELONGS TO THE APPLICATION
@@ -85,15 +73,8 @@ RUN chown -R serial:serial .
 #        ros-kinetic-gazebo-ros-control
 
 # Install ROS dependencies
-WORKDIR $HOME/ros_ws
-USER serial
-RUN echo "export WS=~/" >> $HOME/.bashrc
-#RUN rosdep update
-#RUN rosdep install --from-paths src --ignore-src -r -y
-ENV TERM xterm
 
 EXPOSE 22 5900
-USER root
 
 CMD    ["/usr/bin/supervisord"]
 
