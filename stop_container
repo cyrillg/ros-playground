@@ -1,4 +1,4 @@
 #! /usr/bin/env bash
 
-docker kill $(docker ps -aqf "name=sr-dev")
+docker stop $(docker ps -aqf "name=sr-dev")
 
