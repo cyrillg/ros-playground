@@ -8,15 +8,15 @@ if [[ "$res" != "y" ]]; then
     exit 0
 fi
 
-inst=`docker ps -a --filter=name=sr-docker --format "{{.Names}}"`
+inst=`docker ps -a --filter=name=sr-docker --format "{{.ID}}"`
 if [[ -z "$inst" ]]; then
     echo "No container to reset."
     exit 1
 fi
 
 echo "Deleting sr-docker container..."
+echo -n " -> "
 docker rm sr-docker
 
-echo "Creating sr-docker container..."
 sr-cli create ${1-}
 

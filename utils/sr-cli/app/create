@@ -17,7 +17,8 @@ if [[ -z "$img_name" ]]; then
     echo "  - run: sr-cli build"
     exit 1
 else
-    echo "Creating container..."
+    echo "Creating sr-docker container..."
+    echo -n " -> "
     docker create \
             -p 5900:5900 \
             -p 12321:22 \
