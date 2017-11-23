@@ -1,2 +1,12 @@
 #!/usr/bin/env bash
-echo -e "\033[36mTODO\033[39m: Implement this command"
+
+echo -n "Are you sure you want to delete the sr-dev image? (y/n) "
+read res
+
+if [[ "$res" == "y" ]]; then
+    docker rmi sr-dev
+    echo "sr-dev image deleted"
+else
+    echo "Cancelled"
+fi
+
