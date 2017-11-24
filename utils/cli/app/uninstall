@@ -34,3 +34,4 @@ if [[ "$LN_PATH" != "$APP_DIR/cli" ]]; then
 fi
 
 rm "$FOLDER/$NAME"
+rm /etc/bash_completion.d/$NAME
