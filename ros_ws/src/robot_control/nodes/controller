@@ -7,75 +7,75 @@ from nav_msgs.msg import Path
 from robot_control.controller_lib import *
 
 class ControllerNode:
-  ''' Controller node
-  '''
-  def __init__(self):
-    # Initialize the node
-    rospy.init_node("controller")
-    rospy.sleep(.5)
-
-    # Variables
-    self.p = None
-    self.initialized = False
-
-    # Retrieve the configs and initialize the controller
-    try:
-      self.get_config()
-      self.controller = Controller(self.robot_name,
-                                   self.controller_config)
-      self.initialized = True
-    except KeyError as e:
-      rospy.logerr("Missing config: {}".format(e))
-
-    # Publisher/subscriber
-    Subscriber("path",
-               Path,
-               self.on_path)
-    Subscriber("state",
-               PoseStamped,
-               self.on_state)
-    self.cmd_vel_pub = Publisher("twist_cmd",
-                                 Twist,
-                                 queue_size=10)
-
-  def on_state(self, state):
-    ''' Store the incoming new pose
+    ''' Controller node
     '''
-    self.p = state
+    def __init__(self):
+        # Initialize the node
+        rospy.init_node("controller")
+        rospy.sleep(.5)
 
-  def on_path(self, path):
-    ''' Store the incoming new pose
-    '''
-    rospy.loginfo("Receiving new path")
-    self.controller.start(path)
+        # Variables
+        self.p = None
+        self.initialized = False
 
-  def get_config(self):
-    ns = rospy.get_namespace()
-    self.robot_name = ns.strip("/")
-    self.controller_config = rospy.get_param(ns+"controller")
+        # Retrieve the configs and initialize the controller
+        try:
+            self.get_config()
+            self.controller = Controller(self.robot_name,
+                                         self.controller_config)
+            self.initialized = True
+        except KeyError as e:
+            rospy.logerr("Missing config: {}".format(e))
 
-  def main(self):
-    ''' Main loop
-    '''
-    if self.initialized:
-      rate = rospy.Rate(10)
-      t_start = rospy.Time.now().to_sec()
+        # Publisher/subscriber
+        Subscriber("path",
+                   Path,
+                   self.on_path)
+        Subscriber("state",
+                   PoseStamped,
+                   self.on_state)
+        self.cmd_vel_pub = Publisher("twist_cmd",
+                                     Twist,
+                                     queue_size=10)
 
-      while not rospy.is_shutdown():
-        if self.controller.active:
-          t = rospy.Time.now().to_sec() - t_start
-          (v, w) = self.controller.generate_cmd(t, self.p)
+    def on_state(self, state):
+        ''' Store the incoming new pose
+        '''
+        self.p = state
 
-          msg = Twist()
-          msg.linear.x = v
-          msg.angular.z = w
-          self.cmd_vel_pub.publish(msg)
+    def on_path(self, path):
+        ''' Store the incoming new pose
+        '''
+        rospy.loginfo("Receiving new path")
+        self.controller.start(path)
 
-          rate.sleep()
-    else:
-      rospy.loginfo("Missing configs, shutting down Controller node")
+    def get_config(self):
+        ns = rospy.get_namespace()
+        self.robot_name = ns.strip("/")
+        self.controller_config = rospy.get_param(ns+"controller")
+
+    def main(self):
+        ''' Main loop
+        '''
+        if self.initialized:
+            rate = rospy.Rate(10)
+            t_start = rospy.Time.now().to_sec()
+
+            while not rospy.is_shutdown():
+                if self.controller.active:
+                    t = rospy.Time.now().to_sec() - t_start
+                    (v, w) = self.controller.generate_cmd(t, self.p)
+
+                    msg = Twist()
+                    msg.linear.x = v
+                    msg.angular.z = w
+                    self.cmd_vel_pub.publish(msg)
+
+                    rate.sleep()
+        else:
+            rospy.loginfo("Missing configs, shutting down Controller node")
 
 if __name__=="__main__":
-  c = ControllerNode()
-  c.main()
+    c = ControllerNode()
+    c.main()
 

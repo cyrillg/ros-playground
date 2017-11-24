@@ -5,7 +5,7 @@
 
 echo "Sourcing environment"
 source /opt/ros/kinetic/setup.bash
-source $WS/ros_ws/devel/setup.bash
+source $ROS_WS_PATH/devel/setup.bash
 
 roslaunch deedee_tutorials main.launch
 
