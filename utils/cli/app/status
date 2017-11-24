@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+img_name=`docker images --filter=reference=sr-dev --format "{{.Repository}}"`
+if [[ -z "$img_name" ]]; then
+    echo "Image sr-dev does not exist."
+else
+    echo "Image sr-dev exists."
+fi
+
+inst=`docker ps -a --filter=name=sr-docker --format "{{.ID}}"`
+if [[ -z "$inst" ]]; then
+    echo "Container does not exist."
+else
+    # TODO: Check if the container is running or not
+    echo "Container exists."
+fi
+
