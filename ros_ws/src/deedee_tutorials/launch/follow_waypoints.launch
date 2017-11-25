@@ -1,0 +1,66 @@
+<launch>
+  <arg name="robot_name" default="deedee"/>
+  <arg name="sim_plant" default="true"/>
+  <arg name="autonomous" default="true"/>
+  <arg name="gui" default="false"/>
+  <arg name="headless" default="true"/>
+
+  <!-- Plant -->
+  <group if="$(arg sim_plant)">
+    <arg name="world" default="$(find deedee_gazebo)/worlds/deedee.world"/>
+
+    <include file="$(find deedee_gazebo)/launch/world.launch">
+      <arg name="world" value="$(arg world)" />
+      <arg name="gui" default="$(arg gui)"/>
+      <arg name="headless" default="$(arg headless)"/>
+    </include>
+
+    <include if="$(arg sim_plant)"
+              file="$(find deedee_gazebo)/launch/robot.launch">
+      <arg name="robot_name" value="$(arg robot_name)" />
+      <arg name="z" value="0.25" />
+    </include>
+  </group>
+
+  <rosparam command="load" file="$(find deedee_tutorials)/config/robots.yaml"/>
+
+  <group ns="$(arg robot_name)">
+    <!-- Actuators/sensors drivers -->
+    <node name="motors_driver"
+          pkg="deedee_driver"
+          type="motors_driver_sim"
+          required="true"/>
+
+
+    <!-- Movement model -->
+    <node name="movement_model"
+          pkg="robot_control"
+          type="movement_model"
+          required="true"/>
+
+
+    <!-- Observer -->
+    <node name="observer"
+          pkg="robot_control"
+          type="observer"
+          required="true"/>
+
+
+    <!-- Controller -->
+    <node name="controller"
+          if="$(arg autonomous)"
+          pkg="robot_control"
+          type="controller"
+          output="screen"
+          required="false"/>
+
+    <node name="teleops_node"
+          unless="$(arg autonomous)"
+          pkg="teleop_twist_keyboard"
+          type="teleop_twist_keyboard.py"
+          required="false">
+      <remap from="cmd_vel" to="twist_cmd"/>
+    </node>
+  </group>
+
+</launch>

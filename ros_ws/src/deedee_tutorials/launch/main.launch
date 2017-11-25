@@ -1,0 +1,16 @@
+<launch>
+  <rosparam command="load"
+            file="$(find deedee_tutorials)/config/main.yaml"
+  />
+
+  <node name="main_launcher"
+        pkg="deedee_tutorials"
+        type="main_launcher"
+        output="screen"
+  />
+
+  <node name="gzweb_manager"
+        pkg="deedee_tutorials"
+        type="gzweb_manager"
+  />
+</launch>

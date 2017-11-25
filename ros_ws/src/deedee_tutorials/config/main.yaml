@@ -1,0 +1,6 @@
+robot_name: "deedee" # Name of the robot, used for namespace
+sim_plant: true # Actual or simulated robot
+autonomous: true # Manual (false) or autonomous (true) control
+sim_display: "gzclient" # Visualisation client: gzclient|gzweb|both|none
+gzweb_path: "/home/cyrill/gzweb" # Path to the installation folder for gzweb
+db_path: /home/serial/ros_ws/src/deedee_tutorials/config/paths.yaml
