@@ -1,0 +1,2 @@
+deedee_description:deedee_driver:deedee_gazebo:deedee_tutorials:robot_control
+-DCATKIN_DEVEL_PREFIX=/home/cyrill/ros-playground/devel -DCMAKE_INSTALL_PREFIX=/home/cyrill/ros-playground/install -G Unix Makefiles

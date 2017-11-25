@@ -1,0 +1,8 @@
+prefix=/home/cyrill/ros-playground/install
+
+Name: deedee_description
+Description: Description of deedee_description
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/cyrill/ros-playground/install/lib 
+Requires: 
