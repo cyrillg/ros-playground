@@ -1,0 +1,11 @@
+#! /usr/bin/env bash
+
+# This script requires the WS environment variable to be set
+# For convenience, it can be done in the bashrc
+
+echo "Sourcing environment"
+source /opt/ros/kinetic/setup.bash
+source $ROS_WS_PATH/devel/setup.bash
+
+roslaunch deedee_tutorials main.launch
+
