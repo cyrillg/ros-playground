@@ -1,0 +1,6 @@
+set(deedee_driver_SETUP_PY_VERSION "0.0.0")
+set(deedee_driver_SETUP_PY_SCRIPTS "")
+set(deedee_driver_SETUP_PY_PACKAGES "deedee_driver")
+set(deedee_driver_SETUP_PY_PACKAGE_DIRS "src/deedee_driver")
+set(deedee_driver_SETUP_PY_MODULES "")
+set(deedee_driver_SETUP_PY_MODULE_DIRS "")
