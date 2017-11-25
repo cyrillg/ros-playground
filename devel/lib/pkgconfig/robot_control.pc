@@ -1,8 +1,0 @@
-prefix=/home/cyrill/ros-playground/devel
-
-Name: robot_control
-Description: Description of robot_control
-Version: 0.0.0
-Cflags: -I/home/cyrill/ros-playground/devel/include
-Libs: -L/home/cyrill/ros-playground/devel/lib 
-Requires: message_runtime rospy std_msgs
