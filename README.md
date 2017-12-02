@@ -28,4 +28,4 @@ Very similar to sr-dev, this is also a docker image. The only difference is in t
 
 Visit the [GitHub page](https://github.com/cyrillg/vnc-ros-gnome) for more information.
 
-_I hope this will be useful to you. For any inquiry, you can contact me through the website._
+_I hope this will be useful to you. For any inquiry, you can contact me through the [website](https://serial-robotics.org)._
