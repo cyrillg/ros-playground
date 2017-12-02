@@ -1,4 +1,4 @@
-# Welcome to the ROS Playground [![Build Status](https://travis-ci.org/cyrillg/ros-playground.svg)](https://travis-ci.org/cyrillg/ros-playground)
+# Welcome to the ROS Playground [![Build Status](https://travis-ci.org/cyrillg/ros-playground.svg?branch=master)](https://travis-ci.org/cyrillg/ros-playground)
 
 This repository contains the source code for a simulated mobile robot using the
 ROS middleware. It is primarily meant to be used in parallel to the educational
