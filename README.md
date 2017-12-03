@@ -18,7 +18,7 @@ Visit the [GitHub page](https://github.com/cyrillg/sr-cli) for more information 
 
 ### sr-dev
 
-This is the docker image that is used under the hood by sr-cli. Using it directly might be better for people who prefer to have full control over what they do.
+This is the docker image that is used under the hood by sr-cli. Using it directly might be better for people who prefer to have full control over what they do. It will be regularly updated to keep up with the ros-playground progress.
 
 Visit the [GitHub page](https://github.com/cyrillg/sr-dev) for more information.
 
