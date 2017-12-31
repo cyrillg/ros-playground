@@ -18,11 +18,12 @@ def send_speeds(left_speed, right_speed):
   print "Sending: %s" % cmd
   ser.write(cmd)
 
-send_speeds(-30,30)
+send_speeds(-70,70)
 time.sleep(2.)
-send_speeds(30,30)
+send_speeds(70,70)
 time.sleep(2.)
-send_speeds(70,30)
+send_speeds(100,50)
 time.sleep(2.)
 send_speeds(0,0)
 time.sleep(2.)
+
