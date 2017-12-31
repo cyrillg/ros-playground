@@ -9,3 +9,6 @@ deedee:
   movement_model:
     L: 0.6
     r: 0.15
+  motors_driver:
+    serial_port: /dev/ttyACM0
+    max_wheel_speed: 0.1
