@@ -1,0 +1,28 @@
+#! /usr/bin/env python
+
+import serial
+import time
+
+ser = serial.Serial('/dev/ttyACM0', timeout=1)
+
+def read_frame():
+  c = ser.read()
+  res = c
+  while c != "\n":
+    c = ser.read()
+    res += c
+  return res
+
+def send_speeds(left_speed, right_speed):
+  cmd = "$0,%i,%i\n" % (left_speed, right_speed)
+  print "Sending: %s" % cmd
+  ser.write(cmd)
+
+send_speeds(-30,30)
+time.sleep(2.)
+send_speeds(30,30)
+time.sleep(2.)
+send_speeds(70,30)
+time.sleep(2.)
+send_speeds(0,0)
+time.sleep(2.)
