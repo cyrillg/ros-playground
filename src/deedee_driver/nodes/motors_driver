@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 
+import serial
 from rospy import Subscriber, Publisher
 from robot_control.msg import WheelSpeeds
 from deedee_driver.motors_driver_lib import *
@@ -16,8 +17,11 @@ class MotorsDriverNode:
         # Retrieve the configs and initialize the controller
         try:
             self.get_config()
-            self.controller = Controller(self.robot_name,
-                                         self.controller_config)
+            serial_socket = serial.Serial(self.config["serial_port"],
+                                          timeout=1)
+            self.motors_driver = MotorsDriver(self.robot_name,
+                                              self.config,
+                                              serial_socket)
             self.initialized = True
         except KeyError as e:
             rospy.logerr("Missing config: {}".format(e))
@@ -34,7 +38,7 @@ class MotorsDriverNode:
     def get_config(self):
         ns = rospy.get_namespace()
         self.robot_name = ns.strip("/")
-        self.controller_config = rospy.get_param(ns+"motors_driver")
+        self.config = rospy.get_param(ns+"motors_driver")
 
     def on_wheel_speeds(self, speeds):
         self.send_speeds(speeds.left, speeds.right)
