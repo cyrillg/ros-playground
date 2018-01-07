@@ -53,6 +53,18 @@ class TestMotorsDriver(unittest.TestCase):
                              "%s != %s" % (uniform_speed,
                                            expected_uniform_speed))
 
+    def test_build_packet(self):
+        '''
+        '''
+        speed_left = 23
+        speed_right = -100
+        expected_packet = "$0,23,-100\n"
+        packet = self.md.build_packet(speed_left, speed_right)
+        self.assertEqual(packet,
+                         expected_packet,
+                         "%s != %s" % (packet,
+                                       expected_packet))
+
 if __name__ == '__main__':
     import rosunit
 
