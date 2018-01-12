@@ -27,8 +27,15 @@
   <group ns="$(arg robot_name)">
     <!-- Actuators/sensors drivers -->
     <node name="motors_driver"
+          if="$(arg sim_plant)"
           pkg="deedee_driver"
           type="motors_driver_sim"
+          required="true"/>
+
+    <node name="motors_driver"
+          unless="$(arg sim_plant)"
+          pkg="deedee_driver"
+          type="motors_driver"
           required="true"/>
 
 
