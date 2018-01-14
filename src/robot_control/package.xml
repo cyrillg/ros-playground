@@ -6,7 +6,6 @@
   <description>Control algorithms for mobile robots</description>
 
   <maintainer email="cyrill.guillemot@gmail.com">Cyrill Guillemot</maintainer>
-  <license>GPLv3</license>
   <url type="website">https://serial-robotics.org/</url>
   <author email="cyrill.guillemot@gmail.com">Cyrill Guillemot</author>
 

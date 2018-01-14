@@ -1,15 +1,3 @@
-'''
-Definition of observer classes
-
-Observers gather the methods used to compute the current estimate of the robot
-state
-
-author: Cyrill Guillemot
-email: cyrill.guillemot@gmail.com
-website: http://serial-robotics.org
-license: GNU GPL
-'''
-
 #!/usr/bin/env python
 
 class IdealObs:
