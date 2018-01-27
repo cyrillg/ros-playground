@@ -6,6 +6,7 @@
   <description>Drivers for Deedee actuators and sensors</description>
 
   <maintainer email="cyrill.guillemot@gmail.com">Cyrill Guillemot</maintainer>
+  <license>MIT</license>
   <url type="website">https://serial-robotics.org/</url>
   <author email="cyrill.guillemot@gmail.com">Cyrill Guillemot</author>
 
